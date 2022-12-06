@@ -7,6 +7,7 @@ module Hikvision
 
     attr_accessor :cache
     attr_reader :streaming
+    attr_reader :system
 
     def initialize(ip, username, password, auth = 'digest_auth', https = false)
       @cache = {}
@@ -14,6 +15,7 @@ module Hikvision
       @base_uri = "http#{https ? 's' : ''}://#{ip}"
       @auth = { username: username, password: password }
       @streaming = Hikvision::Streaming.new(self)
+      @system = Hikvision::System.new(self)
     end
 
     def get(path, options = {})
