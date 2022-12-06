@@ -6,6 +6,21 @@ module Hikvision
       @isapi.get_xml('/ISAPI/System/status', options).DeviceStatus.deviceUpTime.inner_html.to_i
     end
 
+    def memory_usage
+      require_sxml
+      @sxml.MemoryList.xpath('//Memory').map { |m| m.memoryUsage.inner_html.to_i }
+    end
+
+    def memory_available
+      require_sxml
+      @sxml.MemoryList.xpath('//Memory').map { |m| m.memoryAvailable.inner_html.to_i }
+    end
+
+    def memory_description
+      require_sxml
+      @sxml.MemoryList.xpath('//Memory').map { |m| m.memoryDescription.inner_html }
+    end
+
     def cpu_utilization
       require_sxml
       @sxml.CPUList.xpath('//CPU').map { |c| c.cpuUtilization.inner_html.to_i }
