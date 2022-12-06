@@ -169,7 +169,6 @@ module Hikvision
     end
 
     def load_capabilities(options = {})
-      require_cxml
       @cxml = @isapi.get_xml("#{url}/capabilities", options).StreamingChannel
     end
 
