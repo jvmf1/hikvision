@@ -38,6 +38,18 @@ module Hikvision
       ws.zip(hs)
     end
 
+    def video_key_frame_interval
+      @xml.Video.keyFrameInterval.inner_html.to_i
+    end
+
+    def video_key_frame_interval=(value)
+      @xml.Video.keyFrameInterval.inner_html = value.to_s
+    end
+
+    def video_key_frame_interval_capabilities
+      @cxml.Video.keyFrameInterval[:min].to_i..@cxml.Video.keyFrameInterval[:max].to_i
+    end
+
     def video_codec
       @xml.Video.videoCodecType.inner_html
     end
