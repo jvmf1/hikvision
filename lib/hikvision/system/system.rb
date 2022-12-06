@@ -96,6 +96,14 @@ module Hikvision
       Date.parse(@isapi.get_xml('/ISAPI/System/time', options).Time.localTime.inner_html)
     end
 
+    def time_zone(options = {})
+      @isapi.get_xml('/ISAPI/System/time', options).Time.timeZone.inner_html
+    end
+
+    def time_mode(options = {})
+      @isapi.get_xml('/ISAPI/System/time', options).Time.timeMode.inner_html
+    end
+
     private
 
     def require_dxml
