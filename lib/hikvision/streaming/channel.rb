@@ -75,6 +75,18 @@ module Hikvision
       @xml.Video.enabled.inner_html == 'true'
     end
 
+    def video_scan_type
+      @xml.Video.videoScanType.inner_html
+    end
+
+    def video_scan_type=(value)
+      @xml.Video.videoScanType.inner_html = value
+    end
+
+    def video_scan_type_capabilities
+      @cxml.Video.videoScanType[:opt].split(',')
+    end
+
     def snapshot_image_type
       @xml.Video.snapShotImageType.inner_html
     end
