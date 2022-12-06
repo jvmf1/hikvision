@@ -92,6 +92,10 @@ module Hikvision
       @isapi.get_xml('/ISAPI/System/status', options).DeviceStatus.deviceUpTime.inner_html.to_i
     end
 
+    def time(options = {cache: false})
+      Date.parse(@isapi.get_xml('/ISAPI/System/time', options).Time.localTime.inner_html)
+    end
+
     private
 
     def require_dxml
