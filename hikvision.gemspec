@@ -15,6 +15,8 @@ Gem::Specification.new do |s|
     'lib/hikvision/system.rb',
     'lib/hikvision/system/time.rb',
     'lib/hikvision/system/reboot.rb',
+    'lib/hikvision/system/status.rb',
+    'lib/hikvision/system/diagnosed_data.rb',
     'lib/hikvision/system/device_info.rb'
   ]
   s.homepage = 'https://github.com/jvmf1/hikvision'

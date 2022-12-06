@@ -6,14 +6,6 @@ module Hikvision
       @isapi = isapi
     end
 
-    def diagnosed_data(options = {cache: false})
-      @isapi.get('/ISAPI/System/diagnosedData', options).response.body
-    end
-
-    def uptime(options = {cache: false})
-      @isapi.get_xml('/ISAPI/System/status', options).DeviceStatus.deviceUpTime.inner_html.to_i
-    end
-
     def load_device_info(options = {})
       @dxml = @isapi.get_xml('/ISAPI/System/deviceInfo', options).DeviceInfo
     end
