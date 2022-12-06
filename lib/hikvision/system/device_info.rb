@@ -1,5 +1,7 @@
 module Hikvision
   class System
+    attr_reader :dxml
+
     def name
       require_dxml
       @dxml.deviceName.inner_html

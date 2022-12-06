@@ -1,5 +1,7 @@
 module Hikvision
   class System
+    attr_reader :txml
+
     def time(options = {cache: false})
       Date.parse(@isapi.get_xml('/ISAPI/System/time', options).Time.localTime.inner_html)
     end
