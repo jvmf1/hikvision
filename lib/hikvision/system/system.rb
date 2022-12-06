@@ -37,7 +37,7 @@ module Hikvision
     private
 
     def require_dxml
-      raise "load_device_info is required" unless @dxml
+      raise 'load_device_info is required' unless @dxml
     end
   end
 end

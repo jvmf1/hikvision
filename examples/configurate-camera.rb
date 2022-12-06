@@ -6,5 +6,5 @@ cam.streaming.load_channels
 channel = cam.streaming.channel(101)
 
 puts channel.name
-channel.name = "NEW NAME"
+channel.name = 'NEW NAME'
 channel.edit

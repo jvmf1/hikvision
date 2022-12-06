@@ -35,8 +35,8 @@ module Hikvision
 
     def video_resolution_capabilities
       require_cxml
-      ws = @cxml.Video.videoResolutionWidth[:opt].split(',').map {|w| w.to_i}
-      hs = @cxml.Video.videoResolutionHeight[:opt].split(',').map {|h| h.to_i}
+      ws = @cxml.Video.videoResolutionWidth[:opt].split(',').map { |w| w.to_i }
+      hs = @cxml.Video.videoResolutionHeight[:opt].split(',').map { |h| h.to_i }
       ws.zip(hs)
     end
 
@@ -179,7 +179,7 @@ module Hikvision
     private
 
     def require_cxml
-      raise "load_capabilities is required" unless @cxml
+      raise 'load_capabilities is required' unless @cxml
     end
   end
 end

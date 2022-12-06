@@ -6,8 +6,7 @@ module Hikvision
     include HTTParty
 
     attr_accessor :cache
-    attr_reader :streaming
-    attr_reader :system
+    attr_reader :streaming, :system
 
     def initialize(ip, username, password, auth = 'digest_auth', https = false)
       @cache = {}

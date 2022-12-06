@@ -12,7 +12,7 @@ Gem::Specification.new do |s|
     'lib/hikvision/isapi.rb',
     'lib/hikvision/streaming/streaming.rb',
     'lib/hikvision/streaming/channel.rb',
-    'lib/hikvision/system/system.rb',
+    'lib/hikvision/system/system.rb'
   ]
   s.homepage = 'https://github.com/jvmf1/hikvision'
   s.license = 'MIT'
