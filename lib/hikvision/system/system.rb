@@ -30,6 +30,41 @@ module Hikvision
       @dxml.deviceLocation.inner_html
     end
 
+    def model
+      require_dxml
+      @dxml.model.inner_html
+    end
+
+    def serial
+      require_dxml
+      @dxml.serialNumber.inner_html
+    end
+
+    def mac_address
+      require_dxml
+      @dxml.macAddress.inner_html
+    end
+
+    def firmware_version
+      require_dxml
+      @dxml.firmwareVersion.inner_html
+    end
+
+    def encoder_version
+      require_dxml
+      @dxml.encoderVersion.inner_html
+    end
+
+    def boot_version
+      require_dxml
+      @dxml.bootVersion.inner_html
+    end
+
+    def hardware_version
+      require_dxml
+      @dxml.hardwareVersion.inner_html
+    end
+
     def load_device_info(options = {})
       @dxml = @isapi.get_xml('/ISAPI/System/deviceInfo', options).DeviceInfo
     end
