@@ -1,6 +1,6 @@
 module Hikvision
   class System
-    attr_reader :dxml
+    attr_reader :dxml, :txml
 
     def initialize(isapi)
       @isapi = isapi
@@ -84,10 +84,6 @@ module Hikvision
       @isapi.get('/ISAPI/System/diagnosedData', options).response.body
     end
 
-    def load_device_info(options = {})
-      @dxml = @isapi.get_xml('/ISAPI/System/deviceInfo', options).DeviceInfo
-    end
-
     def uptime(options = {cache: false})
       @isapi.get_xml('/ISAPI/System/status', options).DeviceStatus.deviceUpTime.inner_html.to_i
     end
@@ -97,17 +93,31 @@ module Hikvision
     end
 
     def time_zone(options = {})
-      @isapi.get_xml('/ISAPI/System/time', options).Time.timeZone.inner_html
+      require_txml
+      @txml.timeZone.inner_html
     end
 
     def time_mode(options = {})
-      @isapi.get_xml('/ISAPI/System/time', options).Time.timeMode.inner_html
+      require_txml
+      @txml.timeMode.inner_html
+    end
+
+    def load_device_info(options = {})
+      @dxml = @isapi.get_xml('/ISAPI/System/deviceInfo', options).DeviceInfo
+    end
+
+    def load_time(options = {})
+      @txml = @isapi.get_xml('/ISAPI/System/time', options).Time
     end
 
     private
 
     def require_dxml
       raise 'load_device_info is required' unless @dxml
+    end
+
+    def require_txml
+      raise 'load_time is required' unless @txml
     end
   end
 end
