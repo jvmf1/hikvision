@@ -71,10 +71,12 @@ module Hikvision
     end
 
     def support_beep?
+      require_dxml
       @dxml.supportBeep.inner_html == 'true'
     end
 
     def support_video_loss?
+      require_dxml
       @dxml.supportVideoLoss.inner_html == 'true'
     end
 
