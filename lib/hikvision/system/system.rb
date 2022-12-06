@@ -65,6 +65,19 @@ module Hikvision
       @dxml.hardwareVersion.inner_html
     end
 
+    def type
+      require_dxml
+      @dxml.deviceType.inner_html
+    end
+
+    def support_beep?
+      @dxml.supportBeep == 'true'
+    end
+
+    def support_video_loss?
+      @dxml.supportVideoLoss == 'true'
+    end
+
     def load_device_info(options = {})
       @dxml = @isapi.get_xml('/ISAPI/System/deviceInfo', options).DeviceInfo
     end
