@@ -69,5 +69,15 @@ module Hikvision
       require_dxml
       @dxml.supportVideoLoss.inner_html == 'true'
     end
+
+    def load_device_info(options = {})
+      @dxml = @isapi.get_xml('/ISAPI/System/deviceInfo', options).DeviceInfo
+    end
+
+    private
+
+    def require_dxml
+      raise 'load_device_info is required' unless @dxml
+    end
   end
 end
