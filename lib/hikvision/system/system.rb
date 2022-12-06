@@ -71,11 +71,11 @@ module Hikvision
     end
 
     def support_beep?
-      @dxml.supportBeep == 'true'
+      @dxml.supportBeep.inner_html == 'true'
     end
 
     def support_video_loss?
-      @dxml.supportVideoLoss == 'true'
+      @dxml.supportVideoLoss.inner_html == 'true'
     end
 
     def load_device_info(options = {})
