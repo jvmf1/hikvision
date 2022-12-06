@@ -1,15 +1,5 @@
 module Hikvision
   class System
-    attr_reader :dxml, :txml
-
-    def initialize(isapi)
-      @isapi = isapi
-    end
-
-    def reboot
-      @isapi.put('/ISAPI/System/reboot')
-    end
-
     def name
       require_dxml
       @dxml.deviceName.inner_html
@@ -78,46 +68,6 @@ module Hikvision
     def support_video_loss?
       require_dxml
       @dxml.supportVideoLoss.inner_html == 'true'
-    end
-
-    def diagnosed_data(options = {cache: false})
-      @isapi.get('/ISAPI/System/diagnosedData', options).response.body
-    end
-
-    def uptime(options = {cache: false})
-      @isapi.get_xml('/ISAPI/System/status', options).DeviceStatus.deviceUpTime.inner_html.to_i
-    end
-
-    def time(options = {cache: false})
-      Date.parse(@isapi.get_xml('/ISAPI/System/time', options).Time.localTime.inner_html)
-    end
-
-    def time_zone(options = {})
-      require_txml
-      @txml.timeZone.inner_html
-    end
-
-    def time_mode(options = {})
-      require_txml
-      @txml.timeMode.inner_html
-    end
-
-    def load_device_info(options = {})
-      @dxml = @isapi.get_xml('/ISAPI/System/deviceInfo', options).DeviceInfo
-    end
-
-    def load_time(options = {})
-      @txml = @isapi.get_xml('/ISAPI/System/time', options).Time
-    end
-
-    private
-
-    def require_dxml
-      raise 'load_device_info is required' unless @dxml
-    end
-
-    def require_txml
-      raise 'load_time is required' unless @txml
     end
   end
 end
