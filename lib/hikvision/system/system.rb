@@ -88,6 +88,10 @@ module Hikvision
       @dxml = @isapi.get_xml('/ISAPI/System/deviceInfo', options).DeviceInfo
     end
 
+    def uptime(options = {cache: false})
+      @isapi.get_xml('/ISAPI/System/status', options).DeviceStatus.deviceUpTime.inner_html.to_i
+    end
+
     private
 
     def require_dxml
