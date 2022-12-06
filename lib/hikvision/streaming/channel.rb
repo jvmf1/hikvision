@@ -20,6 +20,7 @@ module Hikvision
     end
 
     def video_fps_capabilities
+      require_cxml
       @cxml.Video.maxFrameRate[:opt].split(',').map { |f| f.to_i }
     end
 
@@ -33,6 +34,7 @@ module Hikvision
     end
 
     def video_resolution_capabilities
+      require_cxml
       ws = @cxml.Video.videoResolutionWidth[:opt].split(',').map {|w| w.to_i}
       hs = @cxml.Video.videoResolutionHeight[:opt].split(',').map {|h| h.to_i}
       ws.zip(hs)
@@ -47,6 +49,7 @@ module Hikvision
     end
 
     def video_key_frame_interval_capabilities
+      require_cxml
       @cxml.Video.keyFrameInterval[:min].to_i..@cxml.Video.keyFrameInterval[:max].to_i
     end
 
@@ -59,7 +62,8 @@ module Hikvision
     end
 
     def video_codec_capabilities
-      @cxml.Video.videoCodecType[:opt].split(',') if @cxml
+      require_cxml
+      @cxml.Video.videoCodecType[:opt].split(',')
     end
 
     def video_bitrate_type
@@ -71,7 +75,8 @@ module Hikvision
     end
 
     def video_bitrate_type_capabilities
-      @cxml.Video.videoQualityControlType[:opt].split(',') if @cxml
+      require_cxml
+      @cxml.Video.videoQualityControlType[:opt].split(',')
     end
 
     def video_smoothing
@@ -83,7 +88,8 @@ module Hikvision
     end
 
     def video_smoothing_capabilities
-      @cxml.Video.smoothing[:min].to_i..@cxml.Video.smoothing[:max].to_i if @cxml
+      require_cxml
+      @cxml.Video.smoothing[:min].to_i..@cxml.Video.smoothing[:max].to_i
     end
 
     def video_cbitrate
@@ -95,7 +101,8 @@ module Hikvision
     end
 
     def video_cbitrate_capabilities
-      @cxml.Video.constantBitRate[:min].to_i..@cxml.Video.constantBitRate[:max].to_i if @cxml
+      require_cxml
+      @cxml.Video.constantBitRate[:min].to_i..@cxml.Video.constantBitRate[:max].to_i
     end
 
     def video_enabled?
@@ -111,6 +118,7 @@ module Hikvision
     end
 
     def video_scan_type_capabilities
+      require_cxml
       @cxml.Video.videoScanType[:opt].split(',')
     end
 
@@ -123,6 +131,7 @@ module Hikvision
     end
 
     def snapshot_image_type_capabilities
+      require_cxml
       @cxml.Video.snapShotImageType[:opt].split(',')
     end
 
@@ -135,7 +144,8 @@ module Hikvision
     end
 
     def name_capabilities
-      @cxml.channelName[:min].to_i..@cxml.channelName[:max].to_i if @cxml
+      require_cxml
+      @cxml.channelName[:min].to_i..@cxml.channelName[:max].to_i
     end
 
     def enabled?
@@ -159,11 +169,18 @@ module Hikvision
     end
 
     def load_capabilities(options = {})
+      require_cxml
       @cxml = @isapi.get_xml("#{url}/capabilities", options).StreamingChannel
     end
 
     def url
       "/ISAPI/Streaming/channels/#{id}"
+    end
+
+    private
+
+    def require_cxml
+      raise "load_capabilities is required" unless @cxml
     end
   end
 end
