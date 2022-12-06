@@ -23,6 +23,21 @@ module Hikvision
       @cxml.Video.maxFrameRate[:opt].split(',').map { |f| f.to_i }
     end
 
+    def video_resolution
+      [@xml.Video.videoResolutionWidth.inner_html.to_i, @xml.Video.videoResolutionHeight.inner_html.to_i]
+    end
+
+    def video_resolution=(value)
+      @xml.Video.videoResolutionWidth.inner_html = value[0].to_s
+      @xml.Video.videoResolutionHeight.inner_html = value[1].to_s
+    end
+
+    def video_resolution_capabilities
+      ws = @cxml.Video.videoResolutionWidth[:opt].split(',').map {|w| w.to_i}
+      hs = @cxml.Video.videoResolutionHeight[:opt].split(',').map {|h| h.to_i}
+      ws.zip(hs)
+    end
+
     def video_codec
       @xml.Video.videoCodecType.inner_html
     end
