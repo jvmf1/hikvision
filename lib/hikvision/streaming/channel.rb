@@ -11,15 +11,15 @@ module Hikvision
       @xml.xpath('id').inner_html.to_i
     end
 
-    def video_fps
+    def video_framerate
       @xml.Video.maxFrameRate.inner_html.to_i
     end
 
-    def video_fps=(value)
+    def video_framerate=(value)
       @xml.Video.maxFrameRate.inner_html = value.to_s
     end
 
-    def video_fps_capabilities
+    def video_framerate_capabilities
       require_cxml
       @cxml.Video.maxFrameRate[:opt].split(',').map { |f| f.to_i }
     end
