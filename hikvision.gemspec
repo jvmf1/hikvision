@@ -2,6 +2,8 @@ require_relative 'lib/hikvision/version'
 
 Gem::Specification.new do |s|
   s.name = 'hikvision'
+  s.bindir = 'bin'
+  s.executables << 'hikvision'
   s.version = Hikvision::VERSION
   s.summary = 'Ruby Hikvision Interface'
   s.description = s.summary

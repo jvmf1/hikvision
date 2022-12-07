@@ -1,0 +1,203 @@
+#!/usr/bin/env ruby
+
+require 'hikvision'
+require 'optparse'
+require 'colorize'
+
+$args = {}
+
+def bool_opt(p, name)
+  p.on("--#{name}") do |_o|
+    $args[name] = true
+  end
+end
+
+def print_method_if_opt(obj, method, opt, prefix, opts = {})
+  data = obj.send(method)
+  data = data.join(opts.fetch(:join_char, ' ')) if opts.fetch(:join, false)
+  puts "#{prefix.light_green}: #{data.to_s.light_cyan}" if $args[opt]
+end
+
+def set_method_if_opt(obj, method, choices_method, opt, prefix, opts = {})
+  return unless $args[opt]
+
+  data = $args[opt]
+
+  data = data.send(opts[:f]) if opts[:f]
+
+  choices = obj.send(choices_method)
+
+  choices = choices.join(', ') if opts.fetch(:join, true)
+
+  unless obj.send(choices_method).include?(data)
+    error "#{prefix} #{$args[opt]} #{opts.fetch(:error, 'is not available')}, options: #{choices}"
+  end
+  obj.send(method, $args[opt])
+end
+
+def error(str)
+  puts "#{'ERROR'.red}: #{str}"
+  exit 1
+end
+
+def command_banner(command)
+  "Usage: #{$0} #{command} [options]"
+end
+
+commands = {
+  'channel' => OptionParser.new do |p|
+    p.banner = command_banner('channel')
+
+    p.on('--help') do |_o|
+      puts commands['channel']
+      exit
+    end
+
+    p.on('--id ID') do |o|
+      error "invalid id #{o}" unless o.to_i.to_s == o
+      $args['id'] = o.to_i
+    end
+
+    p.on('--set-name NAME') do |o|
+      $args['set-name'] = o
+    end
+
+    p.on('--set-video-codec CODEC') do |o|
+      $args['set-video-codec'] = o
+    end
+
+    p.on('--set-video-bitrate-type TYPE') do |o|
+      $args['set-video-bitrate-type'] = o
+    end
+
+    p.on('--set-video-smoothing SMOOTHING') do |o|
+      error "invalid video smoothing value #{o}" unless o.to_i.to_s == o
+      $args['set-video-smoothing'] = o.to_i
+    end
+
+    p.on('--set-video-framerate FRAMERATE') do |o|
+      error "invalid video framerate value #{o}" unless o.to_i.to_s == o
+      $args['set-video-framerate'] = o.to_i
+    end
+
+    bool_opt(p, 'list-name')
+
+    bool_opt(p, 'list-video-codec')
+
+    bool_opt(p, 'list-video-scan-type')
+
+    bool_opt(p, 'list-snapshot-image-type')
+
+    bool_opt(p, 'list-video-enabled?')
+
+    bool_opt(p, 'list-video-cbitrate')
+
+    bool_opt(p, 'list-video-keyframe-interval')
+
+    bool_opt(p, 'list-video-resolution')
+
+    bool_opt(p, 'list-video-framerate')
+
+    bool_opt(p, 'list-video-bitrate-type')
+
+    bool_opt(p, 'list-video-smoothing')
+  end
+}
+
+parser = OptionParser.new do |p|
+  p.banner = "Usage: #{$0} [options] [command] [command options]"
+
+  bool_opt(p, 'no-color')
+
+  p.on('--help') do |_o|
+    puts parser
+    exit
+  end
+
+  p.on('-h', '--host HOST') do |o|
+    $args['host'] = o
+  end
+
+  p.on('-u', '--user USER') do |o|
+    $args['user'] = o
+  end
+
+  p.on('-p', '--password PASSWORD') do |o|
+    $args['password'] = o
+  end
+
+  p.on('-a', '--auth AUTH') do |o|
+    $args['auth'] = o
+  end
+
+  p.separator ''
+  p.separator "commands: #{commands.keys.join(' ')}"
+  p.separator ''
+  p.separator "#{$0} command --help"
+end
+
+parser.order!
+
+command = ARGV.shift
+
+String.disable_colorization = true if $args['no-color']
+
+%w[host user password].each do |k|
+  next if $args.key?(k)
+
+  error "--#{k} is required"
+end
+
+dev = Hikvision::ISAPI.new($args['host'], $args['user'], $args['password'], $args.fetch('auth', 'digest_auth'))
+
+error "could not authenticate on #{$args['host']}" if dev.put('/ISAPI/Security/sessionHeartbeat').response.code == '401'
+
+error 'missing command' if command.nil?
+
+error "command #{command} is invalid" unless commands.key?(command)
+
+commands[command].order!
+
+case command
+when 'channel'
+  error '--id is required' unless $args.key?('id')
+
+  dev.streaming.load_channels
+
+  error "channel #{$args['id']} doesn't exists" unless dev.streaming.channel($args['id'])
+
+  channel = dev.streaming.channel($args['id'])
+
+  print_method_if_opt(channel, 'name', 'list-name', 'name')
+  print_method_if_opt(channel, 'video_codec', 'list-video-codec', 'video codec')
+  print_method_if_opt(channel, 'video_framerate', 'list-video-framerate', 'video framerate')
+  print_method_if_opt(channel, 'video_bitrate_type', 'list-video-bitrate-type', 'video bitrate type')
+  print_method_if_opt(channel, 'video_smoothing', 'list-video-smoothing', 'video smoothing')
+  print_method_if_opt(channel, 'video_resolution', 'list-video-resolution', 'video resolution', join: true,
+                                                                                                join_char: 'x')
+  print_method_if_opt(channel, 'video_keyframe_interval', 'list-video-keyframe-interval', 'video keyframe interval')
+  print_method_if_opt(channel, 'video_enabled?', 'list-video-enabled', 'video enabled')
+  print_method_if_opt(channel, 'video_cbitrate', 'list-video-cbitrate', 'video constant bitrate')
+  print_method_if_opt(channel, 'video_scan_type', 'list-video-scan-type', 'video scan type')
+  print_method_if_opt(channel, 'snapshot_image_type', 'list-snapshot-image-type', 'snapshot image type')
+
+  edit = false
+
+  %w[set-name set-video-codec set-video-bitrate-type set-video-smoothing set-video-framerate].each do |k|
+    next unless $args.key?(k)
+
+    edit = true
+    channel.load_capabilities
+    break
+  end
+
+  set_method_if_opt(channel, 'video_framerate=', 'video_framerate_capabilities', 'set-video-framerate', 'video framerate')
+  set_method_if_opt(channel, 'video_smoothing=', 'video_smoothing_capabilities', 'set-video-smoothing', 'video smoothing', join: false)
+  set_method_if_opt(channel, 'name=', 'name_capabilities', 'set-name', 'name', f: 'length',
+                                                                               error: 'length is too long', join: false)
+  set_method_if_opt(channel, 'video_bitrate_type=', 'video_bitrate_type_capabilities', 'set-video-bitrate-type',
+                    'video bitrate type')
+  set_method_if_opt(channel, 'video_codec=', 'video_codec_capabilities', 'set-video-codec', 'video codec')
+
+  channel.edit if edit
+end
