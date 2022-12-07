@@ -173,6 +173,7 @@ when 'channel'
   channel = dev.streaming.channel($args['id'])
 
   if $args['picture']
+    error "#{$args['picture']} is a dir" if Dir.exist?($args['picture'])
     f = File.open($args['picture'], 'wb+')
     f.write(channel.picture)
     f.close
