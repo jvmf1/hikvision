@@ -4,6 +4,17 @@ require 'hikvision'
 require 'optparse'
 require 'colorize'
 
+class Numeric
+  def duration
+    secs  = self.to_i
+    mins  = secs / 60
+    hours = mins / 60
+    days  = hours / 24
+
+    "#{days} days #{hours % 24} hours #{mins % 60} minutes #{secs % 60} seconds"
+  end
+end
+
 $args = {}
 
 def bool_opt(p, name)
@@ -105,6 +116,19 @@ commands = {
     bool_opt(p, 'list-video-bitrate-type')
 
     bool_opt(p, 'list-video-smoothing')
+  end,
+
+  'system' => OptionParser.new do |p|
+    p.banner = command_banner('system')
+
+    p.on('--help') do |_o|
+      puts commands['system']
+      exit
+    end
+
+    bool_opt(p, 'uptime')
+
+    bool_opt(p, 'reboot')
   end
 }
 
@@ -212,4 +236,15 @@ when 'channel'
   set_method_if_opt(channel, 'video_codec=', 'video_codec_capabilities', 'set-video-codec', 'video codec')
 
   channel.edit if edit
+
+when 'system'
+  if $args['reboot']
+    dev.system.reboot
+    exit
+  end
+
+  if $args['uptime']
+    puts dev.system.uptime.duration
+    exit
+  end
 end
