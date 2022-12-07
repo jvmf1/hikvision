@@ -58,6 +58,10 @@ commands = {
       $args['id'] = o.to_i
     end
 
+    p.on('--picture FILE') do |o|
+      $args['picture'] = o
+    end
+
     p.on('--set-name NAME') do |o|
       $args['set-name'] = o
     end
@@ -167,6 +171,13 @@ when 'channel'
   error "channel #{$args['id']} doesn't exists" unless dev.streaming.channel($args['id'])
 
   channel = dev.streaming.channel($args['id'])
+
+  if $args['picture']
+    f = File.open($args['picture'], 'wb+')
+    f.write(channel.picture)
+    f.close
+    exit
+  end
 
   print_method_if_opt(channel, 'name', 'list-name', 'name')
   print_method_if_opt(channel, 'video_codec', 'list-video-codec', 'video codec')
