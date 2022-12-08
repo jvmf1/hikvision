@@ -129,6 +129,12 @@ commands = {
     bool_opt(p, 'uptime')
 
     bool_opt(p, 'reboot')
+
+    bool_opt(p, 'time')
+
+    bool_opt(p, 'time-zone')
+
+    bool_opt(p, 'time-mode')
   end
 }
 
@@ -249,4 +255,17 @@ when 'system'
     puts dev.system.uptime.duration
     exit
   end
+
+  puts dev.system.time if $args['time']
+
+  %w[time-zone time-mode].each do |k|
+    if $args.key?(k)
+      dev.system.load_time
+      break
+    end
+  end
+
+  puts dev.system.time_zone if $args['time-zone']
+
+  puts dev.system.time_mode if $args['time-mode']
 end
