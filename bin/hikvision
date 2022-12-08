@@ -253,7 +253,6 @@ when 'system'
 
   if $args['uptime']
     puts dev.system.uptime.duration
-    exit
   end
 
   puts dev.system.time if $args['time']
