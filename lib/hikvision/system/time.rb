@@ -3,7 +3,8 @@ module Hikvision
     attr_reader :txml
 
     def time(options = {cache: false})
-      Date.parse(@isapi.get_xml('/ISAPI/System/time', options).Time.localTime.inner_html)
+      date = @isapi.get_xml('/ISAPI/System/time', options).Time.localTime.inner_html.to_s
+      DateTime.strptime(date, '%Y-%m-%dT%H:%M:%S%z')
     end
 
     def time_zone(options = {})
