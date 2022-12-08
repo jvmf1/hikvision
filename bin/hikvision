@@ -6,7 +6,7 @@ require 'colorize'
 
 class Numeric
   def duration
-    secs  = self.to_i
+    secs  = to_i
     mins  = secs / 60
     hours = mins / 60
     days  = hours / 24
@@ -170,6 +170,12 @@ command = ARGV.shift
 
 String.disable_colorization = true if $args['no-color']
 
+error 'missing command' if command.nil?
+
+error "command #{command} is invalid" unless commands.key?(command)
+
+commands[command].order!
+
 %w[host user password].each do |k|
   next if $args.key?(k)
 
@@ -179,12 +185,6 @@ end
 dev = Hikvision::ISAPI.new($args['host'], $args['user'], $args['password'], $args.fetch('auth', 'digest_auth'))
 
 error "could not authenticate on #{$args['host']}" if dev.put('/ISAPI/Security/sessionHeartbeat').response.code == '401'
-
-error 'missing command' if command.nil?
-
-error "command #{command} is invalid" unless commands.key?(command)
-
-commands[command].order!
 
 case command
 when 'channel'
@@ -227,8 +227,10 @@ when 'channel'
     break
   end
 
-  set_method_if_opt(channel, 'video_framerate=', 'video_framerate_capabilities', 'set-video-framerate', 'video framerate')
-  set_method_if_opt(channel, 'video_smoothing=', 'video_smoothing_capabilities', 'set-video-smoothing', 'video smoothing', join: false)
+  set_method_if_opt(channel, 'video_framerate=', 'video_framerate_capabilities', 'set-video-framerate',
+                    'video framerate')
+  set_method_if_opt(channel, 'video_smoothing=', 'video_smoothing_capabilities', 'set-video-smoothing',
+                    'video smoothing', join: false)
   set_method_if_opt(channel, 'name=', 'name_capabilities', 'set-name', 'name', f: 'length',
                                                                                error: 'length is too long', join: false)
   set_method_if_opt(channel, 'video_bitrate_type=', 'video_bitrate_type_capabilities', 'set-video-bitrate-type',
