@@ -64,9 +64,8 @@ commands = {
       exit
     end
 
-    p.on('--id ID') do |o|
-      error "invalid id #{o}" unless o.to_i.to_s == o
-      $args['id'] = o.to_i
+    p.on('--id ID', Integer) do |o|
+      $args['id'] = o
     end
 
     p.on('--picture FILE') do |o|
@@ -85,14 +84,12 @@ commands = {
       $args['set-video-bitrate-type'] = o
     end
 
-    p.on('--set-video-smoothing SMOOTHING') do |o|
-      error "invalid video smoothing value #{o}" unless o.to_i.to_s == o
-      $args['set-video-smoothing'] = o.to_i
+    p.on('--set-video-smoothing SMOOTHING', Integer) do |o|
+      $args['set-video-smoothing'] = o
     end
 
-    p.on('--set-video-framerate FRAMERATE') do |o|
-      error "invalid video framerate value #{o}" unless o.to_i.to_s == o
-      $args['set-video-framerate'] = o.to_i
+    p.on('--set-video-framerate FRAMERATE', Integer) do |o|
+      $args['set-video-framerate'] = o
     end
 
     bool_opt(p, 'list-name')
@@ -180,7 +177,11 @@ error 'missing command' if command.nil?
 
 error "command #{command} is invalid" unless commands.key?(command)
 
-commands[command].order!
+begin
+  commands[command].order!
+rescue OptionParser::InvalidArgument
+  error $!.to_s
+end
 
 %w[host user password].each do |k|
   next if $args.key?(k)
