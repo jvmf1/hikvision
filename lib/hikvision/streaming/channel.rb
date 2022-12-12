@@ -24,6 +24,8 @@ module Hikvision
 
     add_bool_getter(:enabled?, :@xml, 'enabled')
     add_bool_getter(:video_enabled?, :@xml, 'Video/enabled')
+    add_bool_getter(:multicast_enabled?, :@xml, 'Transport/Multicast/enabled')
+    add_bool_getter(:unicast_enabled?, :@xml, 'Transport/Unicast/enabled')
 
     add_setter(:name=, :@xml, 'channelName')
     add_setter(:video_framerate=, :@xml, 'Video/maxFrameRate')
