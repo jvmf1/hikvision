@@ -1,5 +1,5 @@
 module Hikvision
-  class StreamingChannel
+  class StreamingChannel < Hikvision::Base
     attr_reader :xml, :cxml
 
     def initialize(isapi, xml)
@@ -7,76 +7,49 @@ module Hikvision
       @xml = xml
     end
 
-    # basic getters
-    [
-      ['id', 'id', 'to_i'],
-      ['name', 'channelName', 'to_s'],
-      ['max_packet_size', 'Transport/maxPacketSize', 'to_i'],
-      ['auth_type', 'Transport/Security/certificateType', 'to_s'],
-      ['video_framerate', 'Video/maxFrameRate', 'to_i'],
-      ['video_resolution_width', 'Video/videoResolutionWidth', 'to_i'],
-      ['video_resolution_height', 'Video/videoResolutionHeight', 'to_i'],
-      ['video_cbitrate', 'Video/constantBitRate', 'to_i'],
-      ['video_keyframe_interval', 'Video/keyFrameInterval', 'to_i'],
-      ['video_codec', 'Video/videoCodecType', 'to_s'],
-      ['video_bitrate_type', 'Video/videoQualityControlType', 'to_s'],
-      ['video_scan_type', 'Video/videoScanType', 'to_s'],
-      ['snapshot_image_type', 'Video/snapShotImageType', 'to_s'],
-      ['video_smoothing', 'Video/smoothing', 'to_i']
-    ].each do |method, path, transform|
-      define_method method do
-        @xml.at_xpath(path).inner_html.send(transform)
-      end
-    end
+    add_getter(:id, :@xml, 'id', :to_i)
+    add_getter(:name, :@xml, 'channelName', :to_s)
+    add_getter(:max_packet_size, :@xml, 'Transport/maxPacketSize', :to_i)
+    add_getter(:auth_type, :@xml, 'Transport/Security/certificateType', :to_s)
+    add_getter(:video_framerate, :@xml, 'Video/maxFrameRate', :to_i)
+    add_getter(:video_resolution_width, :@xml, 'Video/videoResolutionWidth', :to_i)
+    add_getter(:video_resolution_height, :@xml, 'Video/videoResolutionHeight', :to_i)
+    add_getter(:video_cbitrate, :@xml, 'Video/constantBitRate', :to_i)
+    add_getter(:video_keyframe_interval, :@xml, 'Video/keyFrameInterval', :to_i)
+    add_getter(:video_codec, :@xml, 'Video/videoCodecType', :to_s)
+    add_getter(:video_bitrate_type, :@xml, 'Video/videoQualityControlType', :to_s)
+    add_getter(:video_scan_type, :@xml, 'Video/videoScanType', :to_s)
+    add_getter(:snapshot_image_type, :@xml, 'Video/snapShotImageType', :to_s)
+    add_getter(:video_smoothing, :@xml, 'Video/smoothing', :to_i)
 
-    # basic setters
-    [
-      ['video_framerate=', 'Video/maxFrameRate'],
-      ['video_keyframe_interval=', 'Video/keyFrameInterval'],
-      ['video_codec=', 'Video/videoCodecType'],
-      ['video_cbitrate=', 'Video/constantBitRate'],
-      ['video_resolution_width=', 'Video/videoResolutionWidth'],
-      ['video_resolution_height=', 'Video/videoResolutionHeight'],
-      ['video_bitrate_type=', 'Video/videoQualityControlType'],
-      ['auth_type=', 'Transport/Security/certificateType'],
-      ['video_scan_type=', 'Video/videoScanType'],
-      ['snapshot_image_type=', 'Video/snapShotImageType'],
-      ['name=', 'channelName']
-    ].each do |method, path|
-      define_method method do |value|
-        @xml.at_xpath(path).inner_html = value.to_s
-      end
-    end
+    add_bool_getter(:enabled?, :@xml, 'enabled')
+    add_bool_getter(:video_enabled?, :@xml, 'Video/enabled')
 
-    # basic capabilities getters
-    [
-      ['video_codec_capabilities', 'Video/videoCodecType', 'to_s'],
-      ['auth_type_capabilities', 'Transport/Security/certificateType', 'to_s'],
-      ['video_bitrate_type_capabilities', 'Video/videoQualityControlType', 'to_s'],
-      ['video_scan_type_capabilities', 'Video/videoScanType', 'to_s'],
-      ['video_resolution_width_capabilities', 'Video/videoResolutionWidth', 'to_i'],
-      ['video_resolution_height_capabilities', 'Video/videoResolutionHeight', 'to_i'],
-      ['snapshot_image_type_capabilities', 'Video/snapShotImageType', 'to_s'],
-      ['video_framerate_capabilities', 'Video/maxFrameRate', 'to_i']
-    ].each do |method, path, transform|
-      define_method method do
-        require_cxml
-        @cxml.at_xpath(path)[:opt].split(',').map { |v| v.send(transform) }
-      end
-    end
+    add_setter(:name=, :@xml, 'channelName')
+    add_setter(:video_framerate=, :@xml, 'Video/maxFrameRate')
+    add_setter(:video_codec=, :@xml, 'Video/videoCodecType')
+    add_setter(:video_keyframe_interval=, :@xml, 'Video/keyFrameInterval')
+    add_setter(:video_cbitrate=, :@xml, 'Video/constantBitRate')
+    add_setter(:video_resolution_width=, :@xml, 'Video/videoResolutionWidth')
+    add_setter(:video_resolution_height=, :@xml, 'Video/videoResolutionHeight')
+    add_setter(:video_bitrate_type=, :@xml, 'Video/videoQualityControlType')
+    add_setter(:video_scan_type=, :@xml, 'Video/videoScanType')
+    add_setter(:snapshot_image_type=, :@xml, 'Video/snapShotImageType')
+    add_setter(:auth_type=, :@xml, 'Transport/Security/certificateType')
 
-    # basic range capabilities getters
-    [
-      ['video_smoothing_capabilities', 'Video/smoothing'],
-      ['name_length_capabilities', 'channelName'],
-      ['video_cbitrate_capabilities', 'Video/constantBitRate'],
-      ['video_keyframe_interval_capabilities', 'Video/keyFrameInterval']
-    ].each do |method, path|
-      define_method method do
-        require_cxml
-        @cxml.at_xpath(path)[:min].to_i..@cxml.at_xpath(path)[:max].to_i
-      end
-    end
+    add_opt_getter(:video_codec_opts, :@cxml, 'Video/videoCodecType', :to_s)
+    add_opt_getter(:video_bitrate_type_opts, :@cxml, 'Video/videoQualityControlType', :to_s)
+    add_opt_getter(:video_scan_type_opts, :@cxml, 'Video/videoScanType', :to_s)
+    add_opt_getter(:video_resolution_width_opts, :@cxml, 'Video/videoResolutionWidth', :to_s)
+    add_opt_getter(:video_resolution_height_opts, :@cxml, 'Video/videoResolutionHeight', :to_s)
+    add_opt_getter(:snapshot_image_type_opts, :@cxml, 'Video/snapShotImageType', :to_s)
+    add_opt_getter(:video_framerate_opts, :@cxml, 'Video/maxFrameRate', :to_s)
+    add_opt_getter(:auth_type_opts, :@cxml, 'Transport/Security/certificateType', :to_s)
+
+    add_opt_range_getter(:video_smoothing_opts, :@cxml, 'Video/smoothing')
+    add_opt_range_getter(:video_cbitrate_opts, :@cxml, 'Video/constantBitRate')
+    add_opt_range_getter(:video_keyframe_interval_opts, :@cxml, 'Video/keyFrameInterval')
+    add_opt_range_getter(:name_length_opts, :@cxml, 'channelName')
 
     def video_resolution
       [video_resolution_width, video_resolution_height]
@@ -87,16 +60,8 @@ module Hikvision
       video_resolution_height = value[1]
     end
 
-    def video_resolution_capabilities
-      video_resolution_width_capabilities.zip(video_resolution_height_capabilities)
-    end
-
-    def video_enabled?
-      @xml.at_xpath('Video/enabled').inner_html == 'true'
-    end
-
-    def enabled?
-      @xml.at_xpath('enabled').inner_html == 'true'
+    def video_resolution_opts
+      video_resolution_width_opts.zip(video_resolution_height_opts)
     end
 
     def picture(options = { cache: false })
@@ -115,18 +80,12 @@ module Hikvision
       @isapi.put(url, options)
     end
 
-    def load_capabilities(options = {})
+    def load_opts(options = {})
       @cxml = @isapi.get_xml("#{url}/capabilities", options).at_xpath('StreamingChannel')
     end
 
     def url
       "/ISAPI/Streaming/channels/#{id}"
-    end
-
-    private
-
-    def require_cxml
-      raise 'load_capabilities is required' unless @cxml
     end
   end
 end

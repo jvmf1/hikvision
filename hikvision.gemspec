@@ -11,6 +11,7 @@ Gem::Specification.new do |s|
   s.files = [
     'lib/hikvision.rb',
     'lib/hikvision/version.rb',
+    'lib/hikvision/base.rb',
     'lib/hikvision/isapi.rb',
     'lib/hikvision/streaming.rb',
     'lib/hikvision/streaming/channel.rb',

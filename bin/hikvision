@@ -230,19 +230,19 @@ when 'channel'
     next unless $args.key?(k)
 
     edit = true
-    channel.load_capabilities
+    channel.load_opts
     break
   end
 
-  set_method_if_opt(channel, 'video_framerate=', 'video_framerate_capabilities', 'set-video-framerate',
+  set_method_if_opt(channel, 'video_framerate=', 'video_framerate_opts', 'set-video-framerate',
                     'video framerate')
-  set_method_if_opt(channel, 'video_smoothing=', 'video_smoothing_capabilities', 'set-video-smoothing',
+  set_method_if_opt(channel, 'video_smoothing=', 'video_smoothing_opts', 'set-video-smoothing',
                     'video smoothing', join: false)
-  set_method_if_opt(channel, 'name=', 'name_capabilities', 'set-name', 'name', f: 'length',
+  set_method_if_opt(channel, 'name=', 'name_opts', 'set-name', 'name', f: 'length',
                                                                                error: 'length is too long', join: false)
-  set_method_if_opt(channel, 'video_bitrate_type=', 'video_bitrate_type_capabilities', 'set-video-bitrate-type',
+  set_method_if_opt(channel, 'video_bitrate_type=', 'video_bitrate_type_opts', 'set-video-bitrate-type',
                     'video bitrate type')
-  set_method_if_opt(channel, 'video_codec=', 'video_codec_capabilities', 'set-video-codec', 'video codec')
+  set_method_if_opt(channel, 'video_codec=', 'video_codec_opts', 'set-video-codec', 'video codec')
 
   channel.edit if edit
 
