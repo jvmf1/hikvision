@@ -6,6 +6,12 @@ module Hikvision
       end
     end
 
+    def self.add_list_getter(method, xml, path, transform)
+      define_method method do
+        instance_variable_get(xml).xpath(path).map { |v| v.inner_html.send(transform) }
+      end
+    end
+
     def self.add_opt_getter(method, xml, path, transform)
       define_method method do
         instance_variable_get(xml).at_xpath(path)[:opt].split(',').map { |v| v.send(transform) }

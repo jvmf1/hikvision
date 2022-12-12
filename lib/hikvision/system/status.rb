@@ -6,25 +6,11 @@ module Hikvision
       @isapi.get_xml('/ISAPI/System/status', options).at_xpath('DeviceStatus/deviceUpTime').inner_html.to_i
     end
 
-    def memory_usage
-      @sxml.xpath('MemoryList/Memory/memoryUsage').map { |m| m.inner_html.to_i }
-    end
-
-    def memory_available
-      @sxml.xpath('MemoryList/Memory/memoryAvailable').map { |m| m.inner_html.to_i }
-    end
-
-    def memory_description
-      @sxml.xpath('MemoryList/Memory/memoryDescription').map { |m| m.inner_html }
-    end
-
-    def cpu_utilization
-      @sxml.xpath('CPUList/CPU/cpuUtilization').map { |c| c.inner_html.to_i }
-    end
-
-    def cpu_description
-      @sxml.xpath('CPUList/CPU/cpuDescription').map { |c| c.inner_html }
-    end
+    add_list_getter(:memory_usage, :@sxml, 'MemoryList/Memory/memoryUsage', :to_i)
+    add_list_getter(:memory_available, :@sxml, 'MemoryList/Memory/memoryAvailable', :to_i)
+    add_list_getter(:memory_description, :@sxml, 'MemoryList/Memory/memoryDescription', :to_s)
+    add_list_getter(:cpu_utilization, :@sxml, 'CPUList/CPU/cpuUtilization', :to_i)
+    add_list_getter(:cpu_description, :@sxml, 'CPUList/CPU/cpuDescription', :to_s)
 
     def load_status(options = {})
       @sxml = @isapi.get_xml('/ISAPI/System/status', options).at_xpath('DeviceStatus')
