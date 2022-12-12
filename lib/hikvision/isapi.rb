@@ -30,7 +30,7 @@ module Hikvision
       data = get(path, options)
       raise "could not get xml of #{path} code:#{data.response.code}" unless ['200'].include?(data.response.code)
 
-      Nokogiri::Slop(data.body).remove_namespaces!
+      Nokogiri::XML(data.body).remove_namespaces!
     end
 
     def put(path, options = {})

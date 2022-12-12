@@ -3,22 +3,22 @@ module Hikvision
     attr_reader :txml
 
     def time(options = {cache: false})
-      date = @isapi.get_xml('/ISAPI/System/time', options).Time.localTime.inner_html.to_s
+      date = @isapi.get_xml('/ISAPI/System/time', options).at_xpath('Time/localTime').inner_html.to_s
       DateTime.strptime(date, '%Y-%m-%dT%H:%M:%S%z')
     end
 
     def time_zone(options = {})
       require_txml
-      @txml.timeZone.inner_html
+      @txml.at_xpath('timeZone').inner_html
     end
 
     def time_mode(options = {})
       require_txml
-      @txml.timeMode.inner_html
+      @txml.at_xpath('timeMode').inner_html
     end
 
     def load_time(options = {})
-      @txml = @isapi.get_xml('/ISAPI/System/time', options).Time
+      @txml = @isapi.get_xml('/ISAPI/System/time', options).at_xpath('Time')
     end
 
     private

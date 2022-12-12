@@ -3,36 +3,36 @@ module Hikvision
     attr_reader :sxml
 
     def uptime(options = {cache: false})
-      @isapi.get_xml('/ISAPI/System/status', options).DeviceStatus.deviceUpTime.inner_html.to_i
+      @isapi.get_xml('/ISAPI/System/status', options).at_xpath('DeviceStatus/deviceUpTime').inner_html.to_i
     end
 
     def memory_usage
       require_sxml
-      @sxml.MemoryList.xpath('//Memory').map { |m| m.memoryUsage.inner_html.to_i }
+      @sxml.xpath('MemoryList/Memory/memoryUsage').map { |m| m.inner_html.to_i }
     end
 
     def memory_available
       require_sxml
-      @sxml.MemoryList.xpath('//Memory').map { |m| m.memoryAvailable.inner_html.to_i }
+      @sxml.xpath('MemoryList/Memory/memoryAvailable').map { |m| m.inner_html.to_i }
     end
 
     def memory_description
       require_sxml
-      @sxml.MemoryList.xpath('//Memory').map { |m| m.memoryDescription.inner_html }
+      @sxml.xpath('MemoryList/Memory/memoryDescription').map { |m| m.inner_html }
     end
 
     def cpu_utilization
       require_sxml
-      @sxml.CPUList.xpath('//CPU').map { |c| c.cpuUtilization.inner_html.to_i }
+      @sxml.xpath('CPUList/CPU/cpuUtilization').map { |c| c.inner_html.to_i }
     end
 
     def cpu_description
       require_sxml
-      @sxml.CPUList.xpath('//CPU').map { |c| c.cpuDescription.inner_html }
+      @sxml.xpath('CPUList/CPU/cpuDescription').map { |c| c.inner_html }
     end
 
     def load_status(options = {})
-      @sxml = @isapi.get_xml('/ISAPI/System/status', options).DeviceStatus
+      @sxml = @isapi.get_xml('/ISAPI/System/status', options).at_xpath('DeviceStatus')
     end
 
     private

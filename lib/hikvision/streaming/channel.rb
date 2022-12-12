@@ -8,148 +8,148 @@ module Hikvision
     end
 
     def id
-      @xml.xpath('id').inner_html.to_i
+      @xml.at_xpath('id').inner_html.to_i
     end
 
     def video_framerate
-      @xml.Video.maxFrameRate.inner_html.to_i
+      @xml.at_xpath('Video/maxFrameRate').inner_html.to_i
     end
 
     def video_framerate=(value)
-      @xml.Video.maxFrameRate.inner_html = value.to_s
+      @xml.at_xpath('Video/maxFrameRate').inner_html = value.to_s
     end
 
     def video_framerate_capabilities
       require_cxml
-      @cxml.Video.maxFrameRate[:opt].split(',').map { |f| f.to_i }
+      @cxml.at_xpath('Video/maxFrameRate')[:opt].split(',').map { |f| f.to_i }
     end
 
     def video_resolution
-      [@xml.Video.videoResolutionWidth.inner_html.to_i, @xml.Video.videoResolutionHeight.inner_html.to_i]
+      [@xml.at_xpath('Video/videoResolutionWidth').inner_html.to_i, @xml.at_xpath('Video/videoResolutionHeight').inner_html.to_i]
     end
 
     def video_resolution=(value)
-      @xml.Video.videoResolutionWidth.inner_html = value[0].to_s
-      @xml.Video.videoResolutionHeight.inner_html = value[1].to_s
+      @xml.at_xpath('Video/videoResolutionWidth').inner_html = value[0].to_s
+      @xml.at_xpath('Video/videoResolutionHeight').inner_html = value[1].to_s
     end
 
     def video_resolution_capabilities
       require_cxml
-      ws = @cxml.Video.videoResolutionWidth[:opt].split(',').map { |w| w.to_i }
-      hs = @cxml.Video.videoResolutionHeight[:opt].split(',').map { |h| h.to_i }
+      ws = @cxml.at_xpath('Video/videoResolutionWidth')[:opt].split(',').map { |w| w.to_i }
+      hs = @cxml.at_xpath('Video/videoResolutionHeight')[:opt].split(',').map { |h| h.to_i }
       ws.zip(hs)
     end
 
     def video_keyframe_interval
-      @xml.Video.keyFrameInterval.inner_html.to_i
+      @xml.at_xpath('Video/keyFrameInterval').inner_html.to_i
     end
 
     def video_keyframe_interval=(value)
-      @xml.Video.keyFrameInterval.inner_html = value.to_s
+      @xml.at_xpath('Video/keyFrameInterval').inner_html = value.to_s
     end
 
     def video_keyframe_interval_capabilities
       require_cxml
-      @cxml.Video.keyFrameInterval[:min].to_i..@cxml.Video.keyFrameInterval[:max].to_i
+      @cxml.at_xpath('Video/keyFrameInterval')[:min].to_i..@cxml.at_xpath('Video/keyFrameInterval')[:max].to_i
     end
 
     def video_codec
-      @xml.Video.videoCodecType.inner_html
+      @xml.at_xpath('Video/videoCodecType').inner_html
     end
 
     def video_codec=(value)
-      @xml.Video.videoCodecType.inner_html = value
+      @xml.at_xpath('Video/videoCodecType').inner_html = value
     end
 
     def video_codec_capabilities
       require_cxml
-      @cxml.Video.videoCodecType[:opt].split(',')
+      @cxml.at_xpath('Video/videoCodecType')[:opt].split(',')
     end
 
     def video_bitrate_type
-      @xml.Video.videoQualityControlType.inner_html
+      @xml.at_xpath('Video/videoQualityControlType').inner_html
     end
 
     def video_bitrate_type=(value)
-      @xml.Video.videoQualityControlType.inner_html = value
+      @xml.at_xpath('Video/videoQualityControlType').inner_html = value
     end
 
     def video_bitrate_type_capabilities
       require_cxml
-      @cxml.Video.videoQualityControlType[:opt].split(',')
+      @cxml.at_xpath('Video/videoQualityControlType')[:opt].split(',')
     end
 
     def video_smoothing
-      @xml.Video.smoothing.inner_html.to_i
+      @xml.at_xpath('Video/smoothing').inner_html.to_i
     end
 
     def video_smoothing=(value)
-      @xml.Video.smoothing.inner_html = value.to_s
+      @xml.at_xpath('Video/smoothing').inner_html = value.to_s
     end
 
     def video_smoothing_capabilities
       require_cxml
-      @cxml.Video.smoothing[:min].to_i..@cxml.Video.smoothing[:max].to_i
+      @cxml.at_xpath('Video/smoothing')[:min].to_i..@cxml.at_xpath('Video/smoothing')[:max].to_i
     end
 
     def video_cbitrate
-      @xml.Video.constantBitRate.inner_html.to_i
+      @xml.at_xpath('Video/constantBitRate').inner_html.to_i
     end
 
     def video_cbitrate=(value)
-      @xml.Video.constantBitRate.inner_html = value.to_s
+      @xml.at_xpath('Video/constantBitRate').inner_html = value.to_s
     end
 
     def video_cbitrate_capabilities
       require_cxml
-      @cxml.Video.constantBitRate[:min].to_i..@cxml.Video.constantBitRate[:max].to_i
+      @cxml.at_xpath('Video/constantBitRate')[:min].to_i..@cxml.at_xpath('Video/constantBitRate')[:max].to_i
     end
 
     def video_enabled?
-      @xml.Video.enabled.inner_html == 'true'
+      @xml.at_xpath('Video/enabled').inner_html == 'true'
     end
 
     def video_scan_type
-      @xml.Video.videoScanType.inner_html
+      @xml.at_xpath('Video/videoScanType').inner_html
     end
 
     def video_scan_type=(value)
-      @xml.Video.videoScanType.inner_html = value
+      @xml.at_xpath('Video/videoScanType').inner_html = value
     end
 
     def video_scan_type_capabilities
       require_cxml
-      @cxml.Video.videoScanType[:opt].split(',')
+      @cxml.at_xpath('Video/videoScanType')[:opt].split(',')
     end
 
     def snapshot_image_type
-      @xml.Video.snapShotImageType.inner_html
+      @xml.at_xpath('Video/snapShotImageType').inner_html
     end
 
     def snapshot_image_type=(value)
-      @xml.Video.snapShotImageType.inner_html = value
+      @xml.at_xpath('Video/snapShotImageType').inner_html = value
     end
 
     def snapshot_image_type_capabilities
       require_cxml
-      @cxml.Video.snapShotImageType[:opt].split(',')
+      @cxml.at_xpath('Video/snapShotImageType')[:opt].split(',')
     end
 
     def name
-      @xml.channelName.inner_html
+      @xml.at_xpath('channelName').inner_html
     end
 
     def name=(value)
-      @xml.channelName.inner_html = value
+      @xml.at_xpath('channelName').inner_html = value
     end
 
     def name_capabilities
       require_cxml
-      @cxml.channelName[:min].to_i..@cxml.channelName[:max].to_i
+      @cxml.at_xpath('channelName')[:min].to_i..@cxml.at_xpath('channelName')[:max].to_i
     end
 
     def enabled?
-      @xml.enabled.inner_html == 'true'
+      @xml.at_xpath('enabled').inner_html == 'true'
     end
 
     def picture(options = { cache: false })
@@ -157,7 +157,7 @@ module Hikvision
     end
 
     def reload(options = {})
-      @xml = @isapi.get_xml(url, options).StreamingChannel
+      @xml = @isapi.get_xml(url, options).at_xpath('StreamingChannel')
     end
 
     def edit(options = {})
@@ -169,7 +169,7 @@ module Hikvision
     end
 
     def load_capabilities(options = {})
-      @cxml = @isapi.get_xml("#{url}/capabilities", options).StreamingChannel
+      @cxml = @isapi.get_xml("#{url}/capabilities", options).at_xpath('StreamingChannel')
     end
 
     def url
