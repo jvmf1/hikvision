@@ -7,25 +7,70 @@ module Hikvision
       @xml = xml
     end
 
-    def id
-      @xml.at_xpath('id').inner_html.to_i
+    # basic getters
+    [
+      ['id', 'id', 'to_i'],
+      ['name', 'channelName', 'to_s'],
+      ['video_framerate', 'Video/maxFrameRate', 'to_i'],
+      ['video_cbitrate', 'Video/constantBitRate', 'to_i'],
+      ['video_keyframe_interval', 'Video/keyFrameInterval', 'to_i'],
+      ['video_codec', 'Video/videoCodecType', 'to_s'],
+      ['video_bitrate_type', 'Video/videoQualityControlType', 'to_s'],
+      ['video_scan_type', 'Video/videoScanType', 'to_s'],
+      ['snapshot_image_type', 'Video/snapShotImageType', 'to_s'],
+      ['video_smoothing', 'Video/smoothing', 'to_i']
+    ].each do |method, path, transform|
+      define_method method do
+        @xml.at_xpath(path).inner_html.send(transform)
+      end
     end
 
-    def video_framerate
-      @xml.at_xpath('Video/maxFrameRate').inner_html.to_i
+    # basic setters
+    [
+      ['video_framerate=', 'Video/maxFrameRate'],
+      ['video_keyframe_interval=', 'Video/keyFrameInterval'],
+      ['video_codec=', 'Video/videoCodecType'],
+      ['video_cbitrate=', 'Video/constantBitRate'],
+      ['video_bitrate_type=', 'Video/videoQualityControlType'],
+      ['video_scan_type=', 'Video/videoScanType'],
+      ['snapshot_image_type=', 'Video/snapShotImageType'],
+      ['name=', 'channelName']
+    ].each do |method, path|
+      define_method method do |value|
+        @xml.at_xpath(path).inner_html = value.to_s
+      end
     end
 
-    def video_framerate=(value)
-      @xml.at_xpath('Video/maxFrameRate').inner_html = value.to_s
+    # basic capabilities getters
+    [
+      ['video_codec_capabilities', 'Video/videoCodecType', 'to_s'],
+      ['video_bitrate_type_capabilities', 'Video/videoQualityControlType', 'to_s'],
+      ['video_scan_type_capabilities', 'Video/videoScanType', 'to_s'],
+      ['snapshot_image_type_capabilities', 'Video/snapShotImageType', 'to_s'],
+      ['video_framerate_capabilities', 'Video/maxFrameRate', 'to_i']
+    ].each do |method, path, transform|
+      define_method method do
+        require_cxml
+        @cxml.at_xpath(path)[:opt].split(',').map { |v| v.send(transform) }
+      end
     end
 
-    def video_framerate_capabilities
-      require_cxml
-      @cxml.at_xpath('Video/maxFrameRate')[:opt].split(',').map { |f| f.to_i }
+    # basic range capabilities getters
+    [
+      ['video_smoothing_capabilities', 'Video/smoothing'],
+      ['name_length_capabilities', 'channelName'],
+      ['video_cbitrate_capabilities', 'Video/constantBitRate'],
+      ['video_keyframe_interval_capabilities', 'Video/keyFrameInterval']
+    ].each do |method, path|
+      define_method method do
+        require_cxml
+        @cxml.at_xpath(path)[:min].to_i..@cxml.at_xpath(path)[:max].to_i
+      end
     end
 
     def video_resolution
-      [@xml.at_xpath('Video/videoResolutionWidth').inner_html.to_i, @xml.at_xpath('Video/videoResolutionHeight').inner_html.to_i]
+      [@xml.at_xpath('Video/videoResolutionWidth').inner_html.to_i,
+       @xml.at_xpath('Video/videoResolutionHeight').inner_html.to_i]
     end
 
     def video_resolution=(value)
@@ -40,112 +85,8 @@ module Hikvision
       ws.zip(hs)
     end
 
-    def video_keyframe_interval
-      @xml.at_xpath('Video/keyFrameInterval').inner_html.to_i
-    end
-
-    def video_keyframe_interval=(value)
-      @xml.at_xpath('Video/keyFrameInterval').inner_html = value.to_s
-    end
-
-    def video_keyframe_interval_capabilities
-      require_cxml
-      @cxml.at_xpath('Video/keyFrameInterval')[:min].to_i..@cxml.at_xpath('Video/keyFrameInterval')[:max].to_i
-    end
-
-    def video_codec
-      @xml.at_xpath('Video/videoCodecType').inner_html
-    end
-
-    def video_codec=(value)
-      @xml.at_xpath('Video/videoCodecType').inner_html = value
-    end
-
-    def video_codec_capabilities
-      require_cxml
-      @cxml.at_xpath('Video/videoCodecType')[:opt].split(',')
-    end
-
-    def video_bitrate_type
-      @xml.at_xpath('Video/videoQualityControlType').inner_html
-    end
-
-    def video_bitrate_type=(value)
-      @xml.at_xpath('Video/videoQualityControlType').inner_html = value
-    end
-
-    def video_bitrate_type_capabilities
-      require_cxml
-      @cxml.at_xpath('Video/videoQualityControlType')[:opt].split(',')
-    end
-
-    def video_smoothing
-      @xml.at_xpath('Video/smoothing').inner_html.to_i
-    end
-
-    def video_smoothing=(value)
-      @xml.at_xpath('Video/smoothing').inner_html = value.to_s
-    end
-
-    def video_smoothing_capabilities
-      require_cxml
-      @cxml.at_xpath('Video/smoothing')[:min].to_i..@cxml.at_xpath('Video/smoothing')[:max].to_i
-    end
-
-    def video_cbitrate
-      @xml.at_xpath('Video/constantBitRate').inner_html.to_i
-    end
-
-    def video_cbitrate=(value)
-      @xml.at_xpath('Video/constantBitRate').inner_html = value.to_s
-    end
-
-    def video_cbitrate_capabilities
-      require_cxml
-      @cxml.at_xpath('Video/constantBitRate')[:min].to_i..@cxml.at_xpath('Video/constantBitRate')[:max].to_i
-    end
-
     def video_enabled?
       @xml.at_xpath('Video/enabled').inner_html == 'true'
-    end
-
-    def video_scan_type
-      @xml.at_xpath('Video/videoScanType').inner_html
-    end
-
-    def video_scan_type=(value)
-      @xml.at_xpath('Video/videoScanType').inner_html = value
-    end
-
-    def video_scan_type_capabilities
-      require_cxml
-      @cxml.at_xpath('Video/videoScanType')[:opt].split(',')
-    end
-
-    def snapshot_image_type
-      @xml.at_xpath('Video/snapShotImageType').inner_html
-    end
-
-    def snapshot_image_type=(value)
-      @xml.at_xpath('Video/snapShotImageType').inner_html = value
-    end
-
-    def snapshot_image_type_capabilities
-      require_cxml
-      @cxml.at_xpath('Video/snapShotImageType')[:opt].split(',')
-    end
-
-    def name
-      @xml.at_xpath('channelName').inner_html
-    end
-
-    def name=(value)
-      @xml.at_xpath('channelName').inner_html = value
-    end
-
-    def name_capabilities
-      require_cxml
-      @cxml.at_xpath('channelName')[:min].to_i..@cxml.at_xpath('channelName')[:max].to_i
     end
 
     def enabled?
