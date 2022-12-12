@@ -2,64 +2,24 @@ module Hikvision
   class System
     attr_reader :dxml
 
-    def name
-      require_dxml
-      @dxml.at_xpath('deviceName').inner_html
-    end
-
-    def id
-      require_dxml
-      @dxml.at_xpath('deviceID').inner_html
-    end
-
-    def description
-      require_dxml
-      @dxml.at_xpath('deviceDescription').inner_html
-    end
-
-    def location
-      require_dxml
-      @dxml.at_xpath('deviceLocation').inner_html
-    end
-
-    def model
-      require_dxml
-      @dxml.at_xpath('model').inner_html
-    end
-
-    def serial
-      require_dxml
-      @dxml.at_xpath('serialNumber').inner_html
-    end
-
-    def mac_address
-      require_dxml
-      @dxml.at_xpath('macAddress').inner_html
-    end
-
-    def firmware_version
-      require_dxml
-      @dxml.at_xpath('firmwareVersion').inner_html
-    end
-
-    def encoder_version
-      require_dxml
-      @dxml.at_xpath('encoderVersion').inner_html
-    end
-
-    def boot_version
-      require_dxml
-      @dxml.at_xpath('bootVersion').inner_html
-    end
-
-    def hardware_version
-      require_dxml
-      @dxml.at_xpath('hardwareVersion').inner_html
-    end
-
-    def type
-      require_dxml
-      @dxml.at_xpath('deviceType').inner_html
+    # basic getters
+    [
+      ['name', 'deviceName', 'to_s'],
+      ['id', 'deviceID', 'to_s'],
+      ['description', 'deviceDescription', 'to_s'],
+      ['location', 'deviceLocation', 'to_s'],
+      ['model', 'model', 'to_s'],
+      ['serial', 'serialNumber', 'to_s'],
+      ['mac_address', 'macAddress', 'to_s'],
+      ['firmware_version', 'firmwareVersion', 'to_s'],
+      ['encoder_version', 'encoderVersion', 'to_s'],
+      ['boot_version', 'bootVersion', 'to_s'],
+      ['hardware_version', 'hardwareVersion', 'to_s'],
+      ['type', 'deviceType', 'to_s'],
+    ].each do |method, path, transform|
+      define_method method do
+        @dxml.at_xpath(path).inner_html.send(transform)
+      end
     end
 
     def support_beep?
