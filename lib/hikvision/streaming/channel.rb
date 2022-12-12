@@ -12,6 +12,7 @@ module Hikvision
       ['id', 'id', 'to_i'],
       ['name', 'channelName', 'to_s'],
       ['max_packet_size', 'Transport/maxPacketSize', 'to_i'],
+      ['auth_type', 'Transport/Security/certificateType', 'to_s'],
       ['video_framerate', 'Video/maxFrameRate', 'to_i'],
       ['video_resolution_width', 'Video/videoResolutionWidth', 'to_i'],
       ['video_resolution_height', 'Video/videoResolutionHeight', 'to_i'],
