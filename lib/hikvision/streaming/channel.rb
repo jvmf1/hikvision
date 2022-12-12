@@ -38,6 +38,7 @@ module Hikvision
       ['video_resolution_width=', 'Video/videoResolutionWidth'],
       ['video_resolution_height=', 'Video/videoResolutionHeight'],
       ['video_bitrate_type=', 'Video/videoQualityControlType'],
+      ['auth_type=', 'Transport/Security/certificateType'],
       ['video_scan_type=', 'Video/videoScanType'],
       ['snapshot_image_type=', 'Video/snapShotImageType'],
       ['name=', 'channelName']
@@ -50,6 +51,7 @@ module Hikvision
     # basic capabilities getters
     [
       ['video_codec_capabilities', 'Video/videoCodecType', 'to_s'],
+      ['auth_type_capabilities', 'Transport/Security/certificateType', 'to_s'],
       ['video_bitrate_type_capabilities', 'Video/videoQualityControlType', 'to_s'],
       ['video_scan_type_capabilities', 'Video/videoScanType', 'to_s'],
       ['video_resolution_width_capabilities', 'Video/videoResolutionWidth', 'to_i'],
