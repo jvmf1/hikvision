@@ -12,6 +12,8 @@ module Hikvision
       ['id', 'id', 'to_i'],
       ['name', 'channelName', 'to_s'],
       ['video_framerate', 'Video/maxFrameRate', 'to_i'],
+      ['video_resolution_width', 'Video/videoResolutionWidth', 'to_i'],
+      ['video_resolution_height', 'Video/videoResolutionHeight', 'to_i'],
       ['video_cbitrate', 'Video/constantBitRate', 'to_i'],
       ['video_keyframe_interval', 'Video/keyFrameInterval', 'to_i'],
       ['video_codec', 'Video/videoCodecType', 'to_s'],
@@ -31,6 +33,8 @@ module Hikvision
       ['video_keyframe_interval=', 'Video/keyFrameInterval'],
       ['video_codec=', 'Video/videoCodecType'],
       ['video_cbitrate=', 'Video/constantBitRate'],
+      ['video_resolution_width=', 'Video/videoResolutionWidth'],
+      ['video_resolution_height=', 'Video/videoResolutionHeight'],
       ['video_bitrate_type=', 'Video/videoQualityControlType'],
       ['video_scan_type=', 'Video/videoScanType'],
       ['snapshot_image_type=', 'Video/snapShotImageType'],
@@ -46,6 +50,8 @@ module Hikvision
       ['video_codec_capabilities', 'Video/videoCodecType', 'to_s'],
       ['video_bitrate_type_capabilities', 'Video/videoQualityControlType', 'to_s'],
       ['video_scan_type_capabilities', 'Video/videoScanType', 'to_s'],
+      ['video_resolution_width_capabilities', 'Video/videoResolutionWidth', 'to_i'],
+      ['video_resolution_height_capabilities', 'Video/videoResolutionHeight', 'to_i'],
       ['snapshot_image_type_capabilities', 'Video/snapShotImageType', 'to_s'],
       ['video_framerate_capabilities', 'Video/maxFrameRate', 'to_i']
     ].each do |method, path, transform|
@@ -69,20 +75,16 @@ module Hikvision
     end
 
     def video_resolution
-      [@xml.at_xpath('Video/videoResolutionWidth').inner_html.to_i,
-       @xml.at_xpath('Video/videoResolutionHeight').inner_html.to_i]
+      [video_resolution_width, video_resolution_height]
     end
 
     def video_resolution=(value)
-      @xml.at_xpath('Video/videoResolutionWidth').inner_html = value[0].to_s
-      @xml.at_xpath('Video/videoResolutionHeight').inner_html = value[1].to_s
+      video_resolution_width = value[0]
+      video_resolution_height = value[1]
     end
 
     def video_resolution_capabilities
-      require_cxml
-      ws = @cxml.at_xpath('Video/videoResolutionWidth')[:opt].split(',').map { |w| w.to_i }
-      hs = @cxml.at_xpath('Video/videoResolutionHeight')[:opt].split(',').map { |h| h.to_i }
-      ws.zip(hs)
+      video_resolution_width_capabilities.zip(video_resolution_height_capabilities)
     end
 
     def video_enabled?
