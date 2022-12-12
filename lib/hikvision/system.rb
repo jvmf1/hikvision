@@ -1,5 +1,5 @@
 module Hikvision
-  class System
+  class System < Hikvision::Base
     def initialize(isapi)
       @isapi = isapi
     end
