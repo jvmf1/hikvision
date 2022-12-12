@@ -18,6 +18,7 @@ module Hikvision
       ['type', 'deviceType', 'to_s'],
     ].each do |method, path, transform|
       define_method method do
+        require_dxml
         @dxml.at_xpath(path).inner_html.send(transform)
       end
     end
