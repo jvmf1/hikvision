@@ -2,7 +2,7 @@ module Hikvision
   class System
     attr_reader :sxml
 
-    def uptime(options = {cache: false})
+    def uptime(options = { cache: false })
       @isapi.get_xml('/ISAPI/System/status', options).at_xpath('DeviceStatus/deviceUpTime').inner_html.to_i
     end
 
