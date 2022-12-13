@@ -96,6 +96,8 @@ commands = {
 
     bool_opt(p, 'list-video-codec')
 
+    bool_opt(p, 'list-audio-codec')
+
     bool_opt(p, 'list-video-scan-type')
 
     bool_opt(p, 'list-snapshot-image-type')
@@ -213,6 +215,7 @@ when 'channel'
 
   print_method_if_opt(channel, 'name', 'list-name', 'name')
   print_method_if_opt(channel, 'video_codec', 'list-video-codec', 'video codec')
+  print_method_if_opt(channel, 'audio_codec', 'list-audio-codec', 'audio codec')
   print_method_if_opt(channel, 'video_framerate', 'list-video-framerate', 'video framerate')
   print_method_if_opt(channel, 'video_bitrate_type', 'list-video-bitrate-type', 'video bitrate type')
   print_method_if_opt(channel, 'video_smoothing', 'list-video-smoothing', 'video smoothing')

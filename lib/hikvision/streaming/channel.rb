@@ -20,10 +20,12 @@ module Hikvision
     add_getter(:video_bitrate_type, :@xml, 'Video/videoQualityControlType', :to_s)
     add_getter(:video_scan_type, :@xml, 'Video/videoScanType', :to_s)
     add_getter(:snapshot_image_type, :@xml, 'Video/snapShotImageType', :to_s)
+    add_getter(:audio_codec, :@xml, 'Audio/audioCompressionType', :to_s)
     add_getter(:video_smoothing, :@xml, 'Video/smoothing', :to_i)
 
     add_bool_getter(:enabled?, :@xml, 'enabled')
     add_bool_getter(:video_enabled?, :@xml, 'Video/enabled')
+    add_bool_getter(:audio_enabled?, :@xml, 'Audio/enabled')
     add_bool_getter(:multicast_enabled?, :@xml, 'Transport/Multicast/enabled')
     add_bool_getter(:unicast_enabled?, :@xml, 'Transport/Unicast/enabled')
     add_bool_getter(:security_enabled?, :@xml, 'Transport/Security/enabled')
