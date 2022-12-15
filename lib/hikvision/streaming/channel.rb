@@ -50,10 +50,10 @@ module Hikvision
     add_opt_getter(:audio_codec_opts, :@cxml, 'Audio/audioCompressionType', :to_s)
     add_opt_getter(:video_bitrate_type_opts, :@cxml, 'Video/videoQualityControlType', :to_s)
     add_opt_getter(:video_scan_type_opts, :@cxml, 'Video/videoScanType', :to_s)
-    add_opt_getter(:video_resolution_width_opts, :@cxml, 'Video/videoResolutionWidth', :to_s)
-    add_opt_getter(:video_resolution_height_opts, :@cxml, 'Video/videoResolutionHeight', :to_s)
+    add_opt_getter(:video_resolution_width_opts, :@cxml, 'Video/videoResolutionWidth', :to_i)
+    add_opt_getter(:video_resolution_height_opts, :@cxml, 'Video/videoResolutionHeight', :to_i)
     add_opt_getter(:snapshot_image_type_opts, :@cxml, 'Video/snapShotImageType', :to_s)
-    add_opt_getter(:video_framerate_opts, :@cxml, 'Video/maxFrameRate', :to_s)
+    add_opt_getter(:video_framerate_opts, :@cxml, 'Video/maxFrameRate', :to_i)
     add_opt_getter(:auth_type_opts, :@cxml, 'Transport/Security/certificateType', :to_s)
 
     add_opt_range_getter(:video_smoothing_opts, :@cxml, 'Video/smoothing')
