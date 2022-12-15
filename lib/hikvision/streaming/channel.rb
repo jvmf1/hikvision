@@ -34,6 +34,7 @@ module Hikvision
     add_setter(:name=, :@xml, 'channelName', [String])
     add_setter(:video_framerate=, :@xml, 'Video/maxFrameRate', [Integer])
     add_setter(:video_codec=, :@xml, 'Video/videoCodecType', [String])
+    add_setter(:audio_codec=, :@xml, 'Audio/audioCompressionType', [String])
     add_setter(:video_keyframe_interval=, :@xml, 'Video/keyFrameInterval', [Integer])
     add_setter(:video_cbitrate=, :@xml, 'Video/constantBitRate', [Integer])
     add_setter(:video_resolution_width=, :@xml, 'Video/videoResolutionWidth', [Integer])
@@ -43,6 +44,7 @@ module Hikvision
     add_setter(:snapshot_image_type=, :@xml, 'Video/snapShotImageType', [String])
     add_setter(:auth_type=, :@xml, 'Transport/Security/certificateType', [String])
     add_setter(:audio_enabled=, :@xml, 'Audio/enabled', [TrueClass, FalseClass])
+    add_setter(:svc_enabled=, :@xml, 'Video/SVC/enabled', [TrueClass, FalseClass])
 
     add_opt_getter(:video_codec_opts, :@cxml, 'Video/videoCodecType', :to_s)
     add_opt_getter(:audio_codec_opts, :@cxml, 'Audio/audioCompressionType', :to_s)
