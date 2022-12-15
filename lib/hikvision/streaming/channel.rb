@@ -43,6 +43,7 @@ module Hikvision
     add_setter(:auth_type=, :@xml, 'Transport/Security/certificateType')
 
     add_opt_getter(:video_codec_opts, :@cxml, 'Video/videoCodecType', :to_s)
+    add_opt_getter(:audio_codec_opts, :@cxml, 'Audio/audioCompressionType', :to_s)
     add_opt_getter(:video_bitrate_type_opts, :@cxml, 'Video/videoQualityControlType', :to_s)
     add_opt_getter(:video_scan_type_opts, :@cxml, 'Video/videoScanType', :to_s)
     add_opt_getter(:video_resolution_width_opts, :@cxml, 'Video/videoResolutionWidth', :to_s)
