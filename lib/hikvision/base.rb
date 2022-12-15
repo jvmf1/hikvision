@@ -30,9 +30,11 @@ module Hikvision
       end
     end
 
-    def self.add_setter(method, xml, path, type)
+    def self.add_setter(method, xml, path, types)
       define_method method do |value|
-        raise TypeError, "value must be of type #{type}" unless value.instance_of?(type)
+        types.each do |type|
+          raise TypeError, "value must be of type #{types}" unless value.instance_of?(type)
+        end
 
         instance_variable_get(xml).at_xpath(path).inner_html = value.to_s
       end
