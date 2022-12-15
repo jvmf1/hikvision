@@ -24,6 +24,7 @@ module Hikvision
     add_getter(:video_smoothing, :@xml, 'Video/smoothing', :to_i)
 
     add_bool_getter(:enabled?, :@xml, 'enabled')
+    add_bool_getter(:svc_enabled?, :@xml, 'Video/SVC/enabled')
     add_bool_getter(:video_enabled?, :@xml, 'Video/enabled')
     add_bool_getter(:audio_enabled?, :@xml, 'Audio/enabled')
     add_bool_getter(:multicast_enabled?, :@xml, 'Transport/Multicast/enabled')
