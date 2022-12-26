@@ -25,3 +25,9 @@ $ hikvision -u user -p password -h 192.168.0.32 channel --id 101 --set-video-fra
 $ hikvision -u user -p password -h 192.168.0.32 channel --id 101 --list-video-framerate
 video framerate: 2000
 ```
+
+# install
+```sh
+gem build
+gem install hikviion-*.gem
+```
