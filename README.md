@@ -28,6 +28,7 @@ video framerate: 2000
 
 # install
 ```sh
+bundle install
 gem build
 gem install hikviion-*.gem
 ```
