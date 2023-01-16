@@ -109,6 +109,8 @@ class App
     c.switch :'video-codec', negatable: false
     c.flag :'set-audio-codec'
     c.switch :'audio-codec', negatable: false
+    c.switch :'disable-audio', negatable: false
+    c.switch :'enable-audio', negatable: false
     c.switch :'video-resolution', negatable: false
     c.switch :'video-framerate', negatable: false
     c.switch :'video-keyframe-interval', negatable: false
@@ -154,7 +156,7 @@ class App
       print_kv :'audio-codec', ch.audio_codec, opts
 
       edited = false
-      %i[set-name set-video-codec set-audio-codec].each do |k|
+      %i[set-name set-video-codec set-audio-codec disable-audio enable-audio].each do |k|
         if opts[k]
           edited = true
           ch.load_opts
@@ -165,6 +167,8 @@ class App
       ch.name = opts[:'set-name'] if opts[:'set-name']
       set_if_in_opts(ch, :video_codec=, opts[:'set-video-codec'], ch.video_codec_opts)
       set_if_in_opts(ch, :audio_codec=, opts[:'set-audio-codec'], ch.audio_codec_opts)
+      set_if_in_opts(ch, :audio_enabled=, false, [false]) if opts[:'disable-audio']
+      set_if_in_opts(ch, :audio_enabled=, true, [true]) if opts[:'enable-audio']
 
       ch.edit if edited
     end
