@@ -122,8 +122,8 @@ class App
     c.switch :enabled, negatable: false
     c.switch :name, negatable: false
     c.flag :'set-name'
-    c.switch :all, negatable: false
-    c.switch :'with-key', negatable: false
+    c.switch :all, negatable: false, desc: 'prints all possible information'
+    c.switch :'with-key', negatable: false, desc: 'prints values with keys'
 
     c.action do |_gopts, opts, args|
       exit_now! "missing id\nusage: channel <id> [opts]", 1 if args.length != 1
@@ -134,9 +134,11 @@ class App
       ch = @cam.streaming.channel(id)
       exit_now! "channel id doesn't exists", 1 if ch.nil?
 
+      set_opts = %i[set-name set-video-codec set-audio-codec disable-audio enable-audio]
+
       if opts[:all]
         opts.each do |key|
-          next if %w[with-key].include? key[0].to_s
+          next if (%w[with-key] + set_opts.map { |o| o.to_s}).include? key[0].to_s
 
           opts[key[0]] = true
         end
@@ -156,7 +158,7 @@ class App
       print_kv :'audio-codec', ch.audio_codec, opts
 
       edited = false
-      %i[set-name set-video-codec set-audio-codec disable-audio enable-audio].each do |k|
+      set_opts.each do |k|
         if opts[k]
           edited = true
           ch.load_opts
