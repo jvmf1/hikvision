@@ -2,7 +2,6 @@
 
 require 'hikvision'
 require 'gli'
-require 'colorize'
 
 class Numeric
   def duration
