@@ -21,6 +21,15 @@ class App
     puts "#{opts[:'with-key'] ? key.to_s + ': ' : ''}#{value}" if opts[key]
   end
 
+  def self.set_if_in_opts(obj, setter, val, opts)
+    return if val.nil?
+    if opts.include? val
+      obj.send(setter, val)
+    else
+      exit_now! "\"#{val}\" is invalid, choose from: #{opts.join(', ')}", 1
+    end
+  end
+
   flag %i[h host], required: true
   flag %i[u user], required: true
   flag %i[p password], required: true
@@ -96,6 +105,7 @@ class App
   end
 
   command :channel do |c|
+    c.flag :'set-video-codec'
     c.switch :'video-codec', negatable: false
     c.switch :'audio-codec', negatable: false
     c.switch :'video-resolution', negatable: false
@@ -108,6 +118,7 @@ class App
     c.switch :'audio-enabled', negatable: false
     c.switch :enabled, negatable: false
     c.switch :name, negatable: false
+    c.flag :'set-name'
     c.switch :all, negatable: false
     c.switch :'with-key', negatable: false
 
@@ -140,6 +151,20 @@ class App
       print_kv :'video-scan-type', ch.video_scan_type, opts
       print_kv :'audio-enabled', ch.audio_enabled?, opts
       print_kv :'audio-codec', ch.audio_codec, opts
+
+      edited = false
+      %i[set-name set-video-codec].each do |k|
+        if opts[k]
+          edited = true
+          ch.load_opts
+          break
+        end
+      end
+
+      ch.name = opts[:'set-name'] if opts[:'set-name']
+      set_if_in_opts(ch, :video_codec=, opts[:'set-video-codec'], ch.video_codec_opts)
+
+      ch.edit if edited
     end
   end
 end
