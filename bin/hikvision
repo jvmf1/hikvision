@@ -87,6 +87,7 @@ class App
     end
   end
 
+  desc 'List available channels'
   command :channels do |c|
     c.action do
       @cam.streaming.load_channels
@@ -95,20 +96,20 @@ class App
   end
 
   command :channel do |c|
-    c.switch :'video-codec'
-    c.switch :'audio-codec'
-    c.switch :'video-resolution'
-    c.switch :'video-framerate'
-    c.switch :'video-keyframe-interval'
-    c.switch :'video-cbr'
-    c.switch :'video-bitrate-type'
-    c.switch :'video-scan-type'
-    c.switch :'video-enabled'
-    c.switch :'audio-enabled'
-    c.switch :enabled
-    c.switch :name
-    c.switch :all
-    c.switch :'with-key'
+    c.switch :'video-codec', negatable: false
+    c.switch :'audio-codec', negatable: false
+    c.switch :'video-resolution', negatable: false
+    c.switch :'video-framerate', negatable: false
+    c.switch :'video-keyframe-interval', negatable: false
+    c.switch :'video-cbr', negatable: false
+    c.switch :'video-bitrate-type', negatable: false
+    c.switch :'video-scan-type', negatable: false
+    c.switch :'video-enabled', negatable: false
+    c.switch :'audio-enabled', negatable: false
+    c.switch :enabled, negatable: false
+    c.switch :name, negatable: false
+    c.switch :all, negatable: false
+    c.switch :'with-key', negatable: false
 
     c.action do |_gopts, opts, args|
       exit_now! "missing id\nusage: channel <id> [opts]", 1 if args.length != 1
