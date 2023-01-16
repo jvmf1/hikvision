@@ -35,6 +35,8 @@ class App
   flag %i[u user], required: true
   flag %i[p password], required: true
 
+  version Hikvision::VERSION
+
   pre do |gopts, _opts, _args|
     @cam = Hikvision::ISAPI.new(gopts[:h], gopts[:u], gopts[:p])
     exit_now! 'could not authenticate' if @cam.put('/ISAPI/Security/sessionHeartbeat').response.code == '401'
