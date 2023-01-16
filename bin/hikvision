@@ -107,23 +107,23 @@ class App
 
   command :channel do |c|
     c.flag :'save-picture', arg_name: 'file', desc: 'saves picture to file'
-    c.flag :'set-video-codec'
-    c.switch :'video-codec', negatable: false
-    c.flag :'set-audio-codec'
-    c.switch :'audio-codec', negatable: false
-    c.switch :'disable-audio', negatable: false
-    c.switch :'enable-audio', negatable: false
-    c.switch :'video-resolution', negatable: false
-    c.switch :'video-framerate', negatable: false
-    c.switch :'video-keyframe-interval', negatable: false
-    c.switch :'video-cbr', negatable: false
-    c.switch :'video-bitrate-type', negatable: false
-    c.switch :'video-scan-type', negatable: false
-    c.switch :'video-enabled', negatable: false
-    c.switch :'audio-enabled', negatable: false
-    c.switch :enabled, negatable: false
-    c.switch :name, negatable: false
-    c.flag :'set-name'
+    c.flag :'set-video-codec', desc: 'sets channel video codec'
+    c.switch :'video-codec', negatable: false, desc: 'prints channel video codec'
+    c.flag :'set-audio-codec', desc: 'sets channel audio codec'
+    c.switch :'audio-codec', negatable: false, desc: 'prints channel audio codec'
+    c.switch :'disable-audio', negatable: false, desc: 'disables channel audio'
+    c.switch :'enable-audio', negatable: false, desc: 'enabled channel audio'
+    c.switch :'video-resolution', negatable: false, desc: 'prints channel video resolution'
+    c.switch :'video-framerate', negatable: false, desc: 'prints channel video framerate'
+    c.switch :'video-keyframe-interval', negatable: false, desc: 'prints channel keyframe interval'
+    c.switch :'video-cbr', negatable: false, desc: 'prints channel video constant bitrate value'
+    c.switch :'video-bitrate-type', negatable: false, desc: 'prints channel video bitrate type'
+    c.switch :'video-scan-type', negatable: false, desc: 'prints channel video scan type'
+    c.switch :'video-enabled', negatable: false, desc: 'prints if channel video is enabled'
+    c.switch :'audio-enabled', negatable: false, desc: 'prints if channel audio is enabled'
+    c.switch :enabled, negatable: false, desc: 'prints if channel is enabled'
+    c.switch :name, negatable: false, desc: 'prints channel name'
+    c.flag :'set-name', desc: 'sets channel name'
     c.switch :all, negatable: false, desc: 'prints all possible information'
     c.switch :'with-key', negatable: false, desc: 'prints values with keys'
 
