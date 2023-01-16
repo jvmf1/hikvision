@@ -45,6 +45,43 @@ class App
     end
   end
 
+  command :model do |c|
+    c.action do |gopts,opts,args|
+      @cam.system.load_device_info
+      puts @cam.system.model
+    end
+  end
+
+  command :serial do |c|
+    c.action do |gopts,opts,args|
+      @cam.system.load_device_info
+      puts @cam.system.serial
+    end
+  end
+
+  desc 'Shows the device id'
+  command :id do |c|
+    c.action do |gopts,opts,args|
+      @cam.system.load_device_info
+      puts @cam.system.id
+    end
+  end
+
+  desc 'Shows the device description'
+  command :desc do |c|
+    c.action do |gopts,opts,args|
+      @cam.system.load_device_info
+      puts @cam.system.description
+    end
+  end
+
+  command :mac do |c|
+    c.action do |gopts,opts,args|
+      @cam.system.load_device_info
+      puts @cam.system.mac_address
+    end
+  end
+
   command :reboot do |c|
     c.action do |gopts,opts,args|
       @cam.system.reboot
