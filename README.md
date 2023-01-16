@@ -21,6 +21,10 @@ channel.edit
 $ hikvision -u user -p password -h 192.168.0.32 channel 101 --video-codec --video-framerate
 H.264
 30.0
+$ hikvision -u user -p password -h 192.168.0.32 channel 101 --set-video-codec H.265
+
+$ hikvision -u user -p password -h 192.168.0.32 channel 101 --video-codec
+H.265
 ```
 
 # install
