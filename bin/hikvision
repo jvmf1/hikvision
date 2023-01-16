@@ -19,41 +19,41 @@ class App
   extend GLI::App
 
   def self.print_kv(key, value, opts)
-    puts "#{opts[:key] ? key.to_s+': ' : ''}#{value}" if opts[key]
+    puts "#{opts[:'with-key'] ? key.to_s + ': ' : ''}#{value}" if opts[key]
   end
 
   flag %i[h host], required: true
   flag %i[u user], required: true
   flag %i[p password], required: true
 
-  pre do |gopts, opts, args|
+  pre do |gopts, _opts, _args|
     @cam = Hikvision::ISAPI.new(gopts[:h], gopts[:u], gopts[:p])
-    exit_now! "could not authenticate" if @cam.put('/ISAPI/Security/sessionHeartbeat').response.code == '401'
+    exit_now! 'could not authenticate' if @cam.put('/ISAPI/Security/sessionHeartbeat').response.code == '401'
     1
   end
 
   command :uptime do |c|
-    c.action do |gopts,opts,args|
+    c.action do
       puts @cam.system.uptime.duration
     end
   end
 
   command :date do |c|
     c.flag :strftime, default_value: '%c'
-    c.action do |gopts,opts,args|
+    c.action do
       puts @cam.system.time.strftime opts[:strftime].to_s
     end
   end
 
   command :model do |c|
-    c.action do |gopts,opts,args|
+    c.action do
       @cam.system.load_device_info
       puts @cam.system.model
     end
   end
 
   command :serial do |c|
-    c.action do |gopts,opts,args|
+    c.action do
       @cam.system.load_device_info
       puts @cam.system.serial
     end
@@ -61,7 +61,7 @@ class App
 
   desc 'Shows the device id'
   command :id do |c|
-    c.action do |gopts,opts,args|
+    c.action do
       @cam.system.load_device_info
       puts @cam.system.id
     end
@@ -69,78 +69,77 @@ class App
 
   desc 'Shows the device description'
   command :desc do |c|
-    c.action do |gopts,opts,args|
+    c.action do
       @cam.system.load_device_info
       puts @cam.system.description
     end
   end
 
   command :mac do |c|
-    c.action do |gopts,opts,args|
+    c.action do
       @cam.system.load_device_info
       puts @cam.system.mac_address
     end
   end
 
   command :reboot do |c|
-    c.action do |gopts,opts,args|
+    c.action do
       @cam.system.reboot
     end
   end
 
-  command :list do |c|
-    c.command :channel do |channel|
-      channel.switch :'video-codec'
-      channel.switch :'audio-codec'
-      channel.switch :'video-resolution'
-      channel.switch :'video-framerate'
-      channel.switch :'video-keyframe-interval'
-      channel.switch :'video-cbr'
-      channel.switch :'video-bitrate-type'
-      channel.switch :'video-scan-type'
-      channel.switch :'video-enabled'
-      channel.switch :'audio-enabled'
-      channel.switch :enabled
-      channel.switch :name
-      channel.switch :all
-      channel.switch :key
-
-      channel.action do |gopts,opts,args|
-        exit_now! "missing id\nusage: list channel <id> [opts]", 1 if args.length != 1
-        id = args[0]
-        exit_now! "channel id must be an integer", 1 if id.to_i.to_s != id
-        id = id.to_i
-        @cam.streaming.load_channels
-        ch = @cam.streaming.channel(id)
-        exit_now! "channel id doesn't exists", 1 if ch.nil?
-
-        if opts[:all]
-          opts.each do |key|
-            next if %w[key].include? key[0].to_s
-            opts[key[0]] = true
-          end
-        end
-
-        print_kv :name, ch.name, opts
-        print_kv :enabled, ch.enabled?, opts
-        print_kv :'video-enabled', ch.video_enabled?, opts
-        print_kv :'video-codec', ch.video_codec, opts
-        print_kv :'video-framerate', ch.video_framerate / 100.0, opts
-        print_kv :'video-resolution', ch.video_resolution.collect {|r| r.to_s}.join('x'), opts
-        print_kv :'video-keyframe-interval', ch.video_keyframe_interval, opts
-        print_kv :'video-bitrate-type', ch.video_bitrate_type, opts
-        print_kv :'video-cbr', ch.video_cbitrate, opts
-        print_kv :'video-scan-type', ch.video_scan_type, opts
-        print_kv :'audio-enabled', ch.audio_enabled?, opts
-        print_kv :'audio-codec', ch.audio_codec, opts
-      end
+  command :channels do |c|
+    c.action do
+      @cam.streaming.load_channels
+      puts @cam.streaming.channels.collect { |ch| ch.id }
     end
+  end
 
-    c.command :channels do |channels|
-      channels.action do |gopts,opts,args|
-        @cam.streaming.load_channels
-        puts @cam.streaming.channels.collect {|ch| ch.id.to_s}
+  command :channel do |c|
+    c.switch :'video-codec'
+    c.switch :'audio-codec'
+    c.switch :'video-resolution'
+    c.switch :'video-framerate'
+    c.switch :'video-keyframe-interval'
+    c.switch :'video-cbr'
+    c.switch :'video-bitrate-type'
+    c.switch :'video-scan-type'
+    c.switch :'video-enabled'
+    c.switch :'audio-enabled'
+    c.switch :enabled
+    c.switch :name
+    c.switch :all
+    c.switch :'with-key'
+
+    c.action do |_gopts, opts, args|
+      exit_now! "missing id\nusage: channel <id> [opts]", 1 if args.length != 1
+      id = args[0]
+      exit_now! 'channel id must be an integer', 1 if id.to_i.to_s != id
+      id = id.to_i
+      @cam.streaming.load_channels
+      ch = @cam.streaming.channel(id)
+      exit_now! "channel id doesn't exists", 1 if ch.nil?
+
+      if opts[:all]
+        opts.each do |key|
+          next if %w[with-key].include? key[0].to_s
+
+          opts[key[0]] = true
+        end
       end
+
+      print_kv :name, ch.name, opts
+      print_kv :enabled, ch.enabled?, opts
+      print_kv :'video-enabled', ch.video_enabled?, opts
+      print_kv :'video-codec', ch.video_codec, opts
+      print_kv :'video-framerate', ch.video_framerate / 100.0, opts
+      print_kv :'video-resolution', ch.video_resolution.collect { |r| r.to_s }.join('x'), opts
+      print_kv :'video-keyframe-interval', ch.video_keyframe_interval, opts
+      print_kv :'video-bitrate-type', ch.video_bitrate_type, opts
+      print_kv :'video-cbr', ch.video_cbitrate, opts
+      print_kv :'video-scan-type', ch.video_scan_type, opts
+      print_kv :'audio-enabled', ch.audio_enabled?, opts
+      print_kv :'audio-codec', ch.audio_codec, opts
     end
   end
 end
