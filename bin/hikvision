@@ -23,6 +23,7 @@ class App
 
   def self.set_if_in_opts(obj, setter, val, opts)
     return if val.nil?
+
     if opts.include? val
       obj.send(setter, val)
     else
@@ -138,7 +139,7 @@ class App
 
       if opts[:all]
         opts.each do |key|
-          next if (%w[with-key] + set_opts.map { |o| o.to_s}).include? key[0].to_s
+          next if (%w[with-key] + set_opts.map { |o| o.to_s }).include? key[0].to_s
 
           opts[key[0]] = true
         end
@@ -159,11 +160,11 @@ class App
 
       edited = false
       set_opts.each do |k|
-        if opts[k]
-          edited = true
-          ch.load_opts
-          break
-        end
+        next unless opts[k]
+
+        edited = true
+        ch.load_opts
+        break
       end
 
       ch.name = opts[:'set-name'] if opts[:'set-name']
