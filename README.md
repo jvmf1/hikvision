@@ -18,12 +18,9 @@ channel.edit
 
 # hikvision cli example
 ```sh
-$ hikvision -u user -p password -h 192.168.0.32 channel --id 101 --list-video-codec --list-video-framerate
-video codec: H.264
-video framerate: 3000
-$ hikvision -u user -p password -h 192.168.0.32 channel --id 101 --set-video-framerate 2000
-$ hikvision -u user -p password -h 192.168.0.32 channel --id 101 --list-video-framerate
-video framerate: 2000
+$ hikvision -u user -p password -h 192.168.0.32 channel 101 --video-codec --video-framerate
+H.264
+30.0
 ```
 
 # install
