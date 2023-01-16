@@ -106,6 +106,7 @@ class App
   end
 
   command :channel do |c|
+    c.flag :'save-picture', arg_name: 'file', desc: 'saves picture to file'
     c.flag :'set-video-codec'
     c.switch :'video-codec', negatable: false
     c.flag :'set-audio-codec'
@@ -139,10 +140,16 @@ class App
 
       if opts[:all]
         opts.each do |key|
-          next if (%w[with-key] + set_opts.map { |o| o.to_s }).include? key[0].to_s
+          next if (%w[with-key save-picture] + set_opts.map { |o| o.to_s }).include? key[0].to_s
 
           opts[key[0]] = true
         end
+      end
+
+      if opts[:'save-picture']
+        file = File.open(opts[:'save-picture'], 'w+b')
+        file.write(ch.picture)
+        file.close
       end
 
       print_kv :name, ch.name, opts
