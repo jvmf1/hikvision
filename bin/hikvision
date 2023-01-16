@@ -38,6 +38,12 @@ class App
     end
   end
 
+  command :reboot do |c|
+    c.action do |gopts,opts,args|
+      @cam.system.reboot
+    end
+  end
+
   command :list do |c|
     c.command :channel do |channel|
       channel.switch :'video-codec'
