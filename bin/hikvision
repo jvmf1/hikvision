@@ -107,6 +107,13 @@ class App
     end
   end
 
+  desc 'Dumps device diagnosed data'
+  command :dumpdata do |c|
+    c.action do
+      puts @cam.system.diagnosed_data
+    end
+  end
+
   command :channel do |c|
     c.flag :'save-picture', arg_name: 'file', desc: 'saves picture to file'
     c.flag :'set-video-codec', desc: 'sets channel video codec'
