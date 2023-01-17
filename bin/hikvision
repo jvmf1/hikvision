@@ -51,7 +51,7 @@ class App
 
   command :date do |c|
     c.flag :strftime, default_value: '%c'
-    c.action do
+    c.action do |gopts, opts, args|
       puts @cam.system.time.strftime opts[:strftime].to_s
     end
   end
