@@ -1,0 +1,29 @@
+PATH
+  remote: .
+  specs:
+    hikvision (0.0.1)
+      gli (~> 2.21)
+      httparty (~> 0.21)
+      nokogiri (~> 1.14)
+
+GEM
+  remote: https://rubygems.org/
+  specs:
+    gli (2.21.0)
+    httparty (0.21.0)
+      mini_mime (>= 1.0.0)
+      multi_xml (>= 0.5.2)
+    mini_mime (1.1.2)
+    multi_xml (0.6.0)
+    nokogiri (1.14.1-x86_64-linux)
+      racc (~> 1.4)
+    racc (1.6.2)
+
+PLATFORMS
+  x86_64-linux
+
+DEPENDENCIES
+  hikvision!
+
+BUNDLED WITH
+   2.3.26
