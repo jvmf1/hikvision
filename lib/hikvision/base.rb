@@ -1,60 +1,55 @@
 module Hikvision
   class Base
-    def self.add_getter(method, xml, path, transform)
-      define_method method do
-        begin
-          instance_variable_get(xml).at_xpath(path).inner_html.send(transform)
-        rescue
-          nil
+    class << self
+      private
+
+      def add_xml(method, url_path, xml_path)
+        iv = :"@#{method}_xml"
+        method = :"load_#{method}"
+        define_method method do |options = {}|
+          return instance_variable_get(iv) if options.fetch(:cache, true) && instance_variable_defined?(iv)
+
+          url = url_path.respond_to?(:call) ? instance_exec(&url_path) : url_path
+          instance_variable_set(iv, @isapi.get_xml(url, options).at_xpath(xml_path))
         end
       end
-    end
 
-    def self.add_list_getter(method, xml, path, transform)
-      define_method method do
-        begin
-          instance_variable_get(xml).xpath(path).map { |v| v.inner_html.send(transform) }
-        rescue
-          nil
+      def add_getter(method, xml_method, path, transform)
+        define_method method do
+          send(:"load_#{xml_method}", cache: true).at_xpath(path).inner_html.send(transform)
         end
       end
-    end
 
-    def self.add_opt_getter(method, xml, path, transform)
-      define_method method do
-        begin
-          instance_variable_get(xml).at_xpath(path)[:opt].split(',').map { |v| v.send(transform) }
-        rescue
-          nil
+      def add_list_getter(method, xml_method, path, transform)
+        define_method method do
+          send(:"load_#{xml_method}", cache: true).xpath(path).map { |v| v.inner_html.send(transform) }
         end
       end
-    end
 
-    def self.add_opt_range_getter(method, xml, path)
-      define_method method do
-        begin
-          instance_variable_get(xml).at_xpath(path)[:min].to_i..@cxml.at_xpath(path)[:max].to_i
-        rescue
-          nil
+      def add_opt_getter(method, xml_method, path, transform)
+        define_method method do
+          send(:"load_#{xml_method}", cache: true).at_xpath(path)[:opt].split(',').map { |v| v.send(transform) }
         end
       end
-    end
 
-    def self.add_bool_getter(method, xml, path)
-      define_method method do
-        begin
-          instance_variable_get(xml).at_xpath(path).inner_html == 'true'
-        rescue
-          nil
+      def add_opt_range_getter(method, xml_method, path)
+        define_method method do
+          send(:"load_#{xml_method}", cache: true).at_xpath(path)[:min].to_i..@cxml.at_xpath(path)[:max].to_i
         end
       end
-    end
 
-    def self.add_setter(method, xml, path, types)
-      define_method method do |value|
-        raise TypeError, "#{method}#{value} (#{value.class}) must be of type #{types}" unless types.include?(value.class)
+      def add_bool_getter(method, xml_method, path)
+        define_method method do
+          send(:"load_#{xml_method}", cache: true).at_xpath(path).inner_html == 'true'
+        end
+      end
 
-        instance_variable_get(xml).at_xpath(path).inner_html = value.to_s
+      def add_setter(method, xml_method, path, types)
+        define_method method do |value|
+          raise TypeError, "#{method}#{value} (#{value.class}) must be of type #{types}" unless types.include?(value.class)
+
+          send(:"load_#{xml_method}", cache: true).at_xpath(path).inner_html = value.to_s
+        end
       end
     end
   end
