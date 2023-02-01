@@ -26,7 +26,7 @@ module Hikvision
       add_bool_getter(:onvif?, :base, 'ONVIF/enable')
       add_bool_getter(:isapi?, :base, 'ISAPI/enable')
 
-      def edit(options = {})
+      def update(options = {})
         options[:body] = @base_xml.xpath('/').to_s
   
         @isapi.cache.delete(self.class.url)

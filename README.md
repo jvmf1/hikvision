@@ -12,7 +12,7 @@ channel = cam.streaming.channel(101)
 puts channel.name
 channel.name = 'NEW NAME'
 channel.video_codec = 'H.264'
-channel.edit
+channel.update
 ```
 
 # hikvision cli example

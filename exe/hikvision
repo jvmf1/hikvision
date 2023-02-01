@@ -181,7 +181,7 @@ class App
       set_if_in_opts(ch, :audio_enabled=, false, [false]) if opts[:'disable-audio']
       set_if_in_opts(ch, :audio_enabled=, true, [true]) if opts[:'enable-audio']
 
-      ch.edit if edited
+      ch.update if edited
     end
   end
 end
