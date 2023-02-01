@@ -32,5 +32,5 @@ git clone https://github.com/jvmf1/hikvision
 cd hikvision
 bundle install
 gem build
-gem install hikviion-*.gem
+gem install hikviion-*.gem --local
 ```
