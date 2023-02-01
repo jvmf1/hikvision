@@ -58,14 +58,12 @@ class App
 
   command :model do |c|
     c.action do
-      @cam.system.load_device_info
       puts @cam.system.model
     end
   end
 
   command :serial do |c|
     c.action do
-      @cam.system.load_device_info
       puts @cam.system.serial
     end
   end
@@ -73,7 +71,6 @@ class App
   desc 'Shows the device id'
   command :id do |c|
     c.action do
-      @cam.system.load_device_info
       puts @cam.system.id
     end
   end
@@ -81,14 +78,12 @@ class App
   desc 'Shows the device description'
   command :desc do |c|
     c.action do
-      @cam.system.load_device_info
       puts @cam.system.description
     end
   end
 
   command :mac do |c|
     c.action do
-      @cam.system.load_device_info
       puts @cam.system.mac_address
     end
   end
@@ -102,7 +97,6 @@ class App
   desc 'List available channels'
   command :channels do |c|
     c.action do
-      @cam.streaming.load_channels
       puts @cam.streaming.channels.collect { |ch| ch.id }
     end
   end
@@ -141,7 +135,6 @@ class App
       id = args[0]
       exit_now! 'channel id must be an integer', 1 if id.to_i.to_s != id
       id = id.to_i
-      @cam.streaming.load_channels
       ch = @cam.streaming.channel(id)
       exit_now! "channel id doesn't exists", 1 if ch.nil?
 
@@ -179,7 +172,6 @@ class App
         next unless opts[k]
 
         edited = true
-        ch.load_opts
         break
       end
 

@@ -7,11 +7,9 @@ module Hikvision
       DateTime.strptime(date, '%Y-%m-%dT%H:%M:%S%z')
     end
 
-    add_getter(:time_zone, :@txml, 'timeZone', :to_s)
-    add_getter(:time_mode, :@txml, 'timeMode', :to_s)
+    add_xml(:time, '/ISAPI/System/time', 'Time')
 
-    def load_time(options = {})
-      @txml = @isapi.get_xml('/ISAPI/System/time', options).at_xpath('Time')
-    end
+    add_getter(:time_zone, :time, 'timeZone', :to_s)
+    add_getter(:time_mode, :time, 'timeMode', :to_s)
   end
 end
