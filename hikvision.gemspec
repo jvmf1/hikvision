@@ -7,7 +7,7 @@ Gem::Specification.new do |s|
   s.version = Hikvision::VERSION
   s.summary = 'Ruby Hikvision Interface'
   s.authors = ['jvmf1']
-  s.files = Dir['{exe|lib}/**/*.rb']
+  s.files = Dir['{exe,lib}/**/*.rb']
   s.homepage = 'https://github.com/jvmf1/hikvision'
   s.license = 'MIT'
 
