@@ -42,9 +42,7 @@ module Hikvision
       end
 
       def add_bool_getter(method, xml_method, path)
-        define_method method do
-          send(:"load_#{xml_method}", cache: true).at_xpath(path).inner_html == 'true'
-        end
+        add_getter(method, xml_method, path) { |v| v == 'true' }
       end
 
       def add_setter(method, xml_method, path, *types, &block)
