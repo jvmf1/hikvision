@@ -14,9 +14,9 @@ module Hikvision
         end
       end
 
-      def add_getter(method, xml_method, path, &block)
+      def add_getter(method, xml_method, path, opts = { cache: true }, &block)
         define_method method do
-          v = send(:"load_#{xml_method}", cache: true).at_xpath(path).inner_html
+          v = send(:"load_#{xml_method}", opts).at_xpath(path).inner_html
           v = block.call(v) if block
           v
         end
