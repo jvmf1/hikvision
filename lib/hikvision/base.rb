@@ -37,8 +37,8 @@ module Hikvision
 
       def add_opt_range_getter(method, xml_method, path)
         define_method method do
-          xml_data = send(:"load_#{xml_method}", cache: true)
-          xml_data.at_xpath(path)[:min].to_i..xml_data.at_xpath(path)[:max].to_i
+          data = send(:"load_#{xml_method}", cache: true).at_xpath(path)
+          data[:min].to_i..data[:max].to_i
         end
       end
 
