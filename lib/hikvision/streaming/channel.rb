@@ -11,21 +11,21 @@ module Hikvision
       load_base(options.merge(cache: false))
     end
 
-    add_getter(:id, :base, 'id', :to_i)
-    add_getter(:name, :base, 'channelName', :to_s)
-    add_getter(:max_packet_size, :base, 'Transport/maxPacketSize', :to_i)
-    add_getter(:auth_type, :base, 'Transport/Security/certificateType', :to_s)
-    add_getter(:video_framerate, :base, 'Video/maxFrameRate', :to_i)
-    add_getter(:video_resolution_width, :base, 'Video/videoResolutionWidth', :to_i)
-    add_getter(:video_resolution_height, :base, 'Video/videoResolutionHeight', :to_i)
-    add_getter(:video_cbitrate, :base, 'Video/constantBitRate', :to_i)
-    add_getter(:video_keyframe_interval, :base, 'Video/keyFrameInterval', :to_i)
-    add_getter(:video_codec, :base, 'Video/videoCodecType', :to_s)
-    add_getter(:video_bitrate_type, :base, 'Video/videoQualityControlType', :to_s)
-    add_getter(:video_scan_type, :base, 'Video/videoScanType', :to_s)
-    add_getter(:snapshot_image_type, :base, 'Video/snapShotImageType', :to_s)
-    add_getter(:audio_codec, :base, 'Audio/audioCompressionType', :to_s)
-    add_getter(:video_smoothing, :base, 'Video/smoothing', :to_i)
+    add_getter(:id, :base, 'id') { |v| v.to_i }
+    add_getter(:name, :base, 'channelName')
+    add_getter(:max_packet_size, :base, 'Transport/maxPacketSize') { |v| v.to_i }
+    add_getter(:auth_type, :base, 'Transport/Security/certificateType')
+    add_getter(:video_framerate, :base, 'Video/maxFrameRate') { |v| v.to_i }
+    add_getter(:video_resolution_width, :base, 'Video/videoResolutionWidth') { |v| v.to_i }
+    add_getter(:video_resolution_height, :base, 'Video/videoResolutionHeight') { |v| v.to_i }
+    add_getter(:video_cbitrate, :base, 'Video/constantBitRate') { |v| v.to_i }
+    add_getter(:video_keyframe_interval, :base, 'Video/keyFrameInterval') { |v| v.to_i }
+    add_getter(:video_codec, :base, 'Video/videoCodecType')
+    add_getter(:video_bitrate_type, :base, 'Video/videoQualityControlType')
+    add_getter(:video_scan_type, :base, 'Video/videoScanType')
+    add_getter(:snapshot_image_type, :base, 'Video/snapShotImageType')
+    add_getter(:audio_codec, :base, 'Audio/audioCompressionType')
+    add_getter(:video_smoothing, :base, 'Video/smoothing') { |v| v.to_i }
 
     add_bool_getter(:enabled?, :base, 'enabled')
     add_bool_getter(:svc_enabled?, :base, 'Video/SVC/enabled')

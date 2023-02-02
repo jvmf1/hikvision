@@ -9,7 +9,7 @@ module Hikvision
 
     add_xml(:time, '/ISAPI/System/time', 'Time')
 
-    add_getter(:time_zone, :time, 'timeZone', :to_s)
-    add_getter(:time_mode, :time, 'timeMode', :to_s)
+    add_getter(:time_zone, :time, 'timeZone')
+    add_getter(:time_mode, :time, 'timeMode')
   end
 end
