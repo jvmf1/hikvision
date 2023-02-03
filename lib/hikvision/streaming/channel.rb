@@ -12,8 +12,8 @@ module Hikvision
     add_getter(:max_packet_size, :base, 'Transport/maxPacketSize') { |v| v.to_i }
     add_getter(:auth_type, :base, 'Transport/Security/certificateType')
     add_getter(:video_framerate, :base, 'Video/maxFrameRate') { |v| v.to_i }
-    add_getter(:video_resolution_width, :base, 'Video/videoResolutionWidth') { |v| v.to_i }
-    add_getter(:video_resolution_height, :base, 'Video/videoResolutionHeight') { |v| v.to_i }
+    add_getter(:video_width, :base, 'Video/videoResolutionWidth') { |v| v.to_i }
+    add_getter(:video_height, :base, 'Video/videoResolutionHeight') { |v| v.to_i }
     add_getter(:video_cbitrate, :base, 'Video/constantBitRate') { |v| v.to_i }
     add_getter(:video_keyframe_interval, :base, 'Video/keyFrameInterval') { |v| v.to_i }
     add_getter(:video_codec, :base, 'Video/videoCodecType')
@@ -37,8 +37,8 @@ module Hikvision
     add_setter(:audio_codec=, :base, 'Audio/audioCompressionType', String)
     add_setter(:video_keyframe_interval=, :base, 'Video/keyFrameInterval', Integer)
     add_setter(:video_cbitrate=, :base, 'Video/constantBitRate', Integer)
-    add_setter(:video_resolution_width=, :base, 'Video/videoResolutionWidth', Integer)
-    add_setter(:video_resolution_height=, :base, 'Video/videoResolutionHeight', Integer)
+    add_setter(:video_width=, :base, 'Video/videoResolutionWidth', Integer)
+    add_setter(:video_height=, :base, 'Video/videoResolutionHeight', Integer)
     add_setter(:video_bitrate_type=, :base, 'Video/videoQualityControlType', String)
     add_setter(:video_scan_type=, :base, 'Video/videoScanType', String)
     add_setter(:snapshot_image_type=, :base, 'Video/snapShotImageType', String)
@@ -52,8 +52,8 @@ module Hikvision
     add_opt_getter(:audio_codec_opts, :capabilities, 'Audio/audioCompressionType', :to_s)
     add_opt_getter(:video_bitrate_type_opts, :capabilities, 'Video/videoQualityControlType', :to_s)
     add_opt_getter(:video_scan_type_opts, :capabilities, 'Video/videoScanType', :to_s)
-    add_opt_getter(:video_resolution_width_opts, :capabilities, 'Video/videoResolutionWidth', :to_i)
-    add_opt_getter(:video_resolution_height_opts, :capabilities, 'Video/videoResolutionHeight', :to_i)
+    add_opt_getter(:video_width_opts, :capabilities, 'Video/videoResolutionWidth', :to_i)
+    add_opt_getter(:video_height_opts, :capabilities, 'Video/videoResolutionHeight', :to_i)
     add_opt_getter(:snapshot_image_type_opts, :capabilities, 'Video/snapShotImageType', :to_s)
     add_opt_getter(:video_framerate_opts, :capabilities, 'Video/maxFrameRate', :to_i)
     add_opt_getter(:auth_type_opts, :capabilities, 'Transport/Security/certificateType', :to_s)
@@ -64,16 +64,16 @@ module Hikvision
     add_opt_range_getter(:name_length_opts, :capabilities, 'channelName')
 
     def video_resolution
-      [video_resolution_width, video_resolution_height]
+      [video_width, video_height]
     end
 
     def video_resolution=(value)
-      video_resolution_width = value[0]
-      video_resolution_height = value[1]
+      video_width = value[0]
+      video_height = value[1]
     end
 
     def video_resolution_opts
-      video_resolution_width_opts.zip(video_resolution_height_opts)
+      video_width_opts.zip(video_height_opts)
     end
 
     def picture(options = { cache: false })
