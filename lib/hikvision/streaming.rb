@@ -18,7 +18,7 @@ module Hikvision
       @channels = {}
       xml = @isapi.get_xml('/ISAPI/Streaming/channels', options)
       xml.xpath('StreamingChannelList/StreamingChannel').each do |c|
-        channel = Hikvision::StreamingChannel.new(@isapi, c)
+        channel = Channel.new(@isapi, c)
         @channels[channel.id] = channel
       end
       @channels
