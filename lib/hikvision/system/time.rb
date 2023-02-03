@@ -16,8 +16,8 @@ module Hikvision
       add_getter(:mode, :base, 'timeMode')
       add_setter(:mode=, :base, 'timeMode', Symbol, String)
 
-      add_getter(:datetime, :base, 'localTime', cache: false) { |v| DateTime.strptime(v, '%Y-%m-%dT%H:%M:%S%Z') }
-      add_setter(:datetime=, :base, 'localTime', DateTime) { |v| v.strftime('%Y-%m-%dT%H:%M:%S%Z') }
+      add_getter(:now, :base, 'localTime', cache: false) { |v| DateTime.strptime(v, '%Y-%m-%dT%H:%M:%S%Z') }
+      add_setter(:now=, :base, 'localTime', DateTime) { |v| v.strftime('%Y-%m-%dT%H:%M:%S%Z') }
 
       add_getter(:zone, :base, 'timeZone')
       add_setter(:zone=, :base, 'timeZone', String)
