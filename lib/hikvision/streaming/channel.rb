@@ -7,10 +7,6 @@ module Hikvision
 
     add_xml(:base, -> { url }, 'StreamingChannel')
 
-    def reload(options = {})
-      load_base(options.merge(cache: false))
-    end
-
     add_getter(:id, :base, 'id') { |v| v.to_i }
     add_getter(:name, :base, 'channelName')
     add_getter(:max_packet_size, :base, 'Transport/maxPacketSize') { |v| v.to_i }

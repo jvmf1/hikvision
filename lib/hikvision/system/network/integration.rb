@@ -13,10 +13,6 @@ module Hikvision
 
       add_xml(:base, url, "Integrate")
 
-      def reload(options = {})
-        load_base(options.merge(cache: false))
-      end  
-
       add_setter(:cgi=, :base, 'CGI/enable', TrueClass, FalseClass)
 
       add_getter(:cgi_authentication, :base, 'CGI/certificateType') { |v| v.include?("basic") ? :basic : :digest }

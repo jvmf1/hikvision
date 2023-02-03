@@ -5,12 +5,17 @@ module Hikvision
 
       def add_xml(method, url_path, xml_path)
         iv = :"@#{method}_xml"
-        method = :"load_#{method}"
-        define_method method do |options = {}|
+        load_method = :"load_#{method}"
+        define_method load_method do |options = {}|
           return instance_variable_get(iv) if options.fetch(:cache, true) && instance_variable_defined?(iv)
 
           url = url_path.respond_to?(:call) ? instance_exec(&url_path) : url_path
           instance_variable_set(iv, @isapi.get_xml(url, options).at_xpath(xml_path))
+        end
+
+        reload_method = method == :base ? :reload : :"reload_#{method}"
+        define_method reload_method do |options = {}|
+          send(load_method, options.merge(cache: false))
         end
       end
 
