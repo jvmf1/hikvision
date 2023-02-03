@@ -13,7 +13,7 @@ module Hikvision
 
       add_xml(:base, url, 'Time')
 
-      add_getter(:mode, :base, 'timeMode')
+      add_getter(:mode, :base, 'timeMode') { |v| v.to_sym }
       add_setter(:mode=, :base, 'timeMode', Symbol, String)
 
       add_getter(:now, :base, 'localTime', cache: false) { |v| DateTime.strptime(v, '%Y-%m-%dT%H:%M:%S%Z') }
