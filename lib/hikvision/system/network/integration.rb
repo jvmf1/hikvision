@@ -29,8 +29,6 @@ module Hikvision
       def update(options = {})
         options[:body] = @base_xml.xpath('/').to_s
   
-        @isapi.cache.delete(self.class.url)
-  
         @isapi.put(self.class.url, options)
       end
     end
