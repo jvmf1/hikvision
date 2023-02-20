@@ -158,7 +158,7 @@ class App
       print_kv :enabled, ch.enabled?, opts
       print_kv :'video-enabled', ch.video_enabled?, opts
       print_kv :'video-codec', ch.video_codec, opts
-      print_kv :'video-framerate', ch.video_framerate / 100.0, opts
+      print_kv :'video-framerate', ch.video_framerate, opts
       print_kv :'video-resolution', ch.video_resolution.collect { |r| r.to_s }.join('x'), opts
       print_kv :'video-keyframe-interval', ch.video_keyframe_interval, opts
       print_kv :'video-bitrate-type', ch.video_bitrate_type, opts
