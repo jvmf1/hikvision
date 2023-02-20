@@ -16,6 +16,7 @@ module Hikvision
       add_getter(:video_width, :base, 'Video/videoResolutionWidth') { |v| v.to_i }
       add_getter(:video_height, :base, 'Video/videoResolutionHeight') { |v| v.to_i }
       add_getter(:video_cbitrate, :base, 'Video/constantBitRate') { |v| v.to_i }
+      add_getter(:video_vbitrate_upper_cap, :base, 'Video/vbrUpperCap') { |v| v.to_i }
       add_getter(:video_keyframe_interval, :base, 'Video/keyFrameInterval') { |v| v.to_i / 1000 }
       add_getter(:video_codec, :base, 'Video/videoCodecType')
       add_getter(:video_bitrate_type, :base, 'Video/videoQualityControlType')
@@ -38,6 +39,7 @@ module Hikvision
       add_setter(:audio_codec=, :base, 'Audio/audioCompressionType', String)
       add_setter(:video_keyframe_interval=, :base, 'Video/keyFrameInterval', Numeric) { |v| (v * 1000).to_i }
       add_setter(:video_cbitrate=, :base, 'Video/constantBitRate', Integer)
+      add_setter(:video_vbitrate_upper_cap=, :base, 'Video/vbrUpperCap', Integer)
       add_setter(:video_width=, :base, 'Video/videoResolutionWidth', Integer)
       add_setter(:video_height=, :base, 'Video/videoResolutionHeight', Integer)
       add_setter(:video_bitrate_type=, :base, 'Video/videoQualityControlType', String)
@@ -61,6 +63,7 @@ module Hikvision
 
       add_opt_range_getter(:video_smoothing_opts, :capabilities, 'Video/smoothing')
       add_opt_range_getter(:video_cbitrate_opts, :capabilities, 'Video/constantBitRate')
+      add_opt_range_getter(:video_vbitrate_upper_cap_opts, :capabilities, 'Video/vbrUpperCap')
       add_opt_range_getter(:video_keyframe_interval_opts, :capabilities, 'Video/keyFrameInterval')
       add_opt_range_getter(:name_length_opts, :capabilities, 'channelName')
 
