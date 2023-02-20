@@ -89,7 +89,7 @@ module Hikvision
 
         @isapi.cache.delete('/ISAPI/Streaming/channels')
 
-        @isapi.put(url, options)
+        @isapi.put_xml(url, options)
       end
 
       def url
