@@ -5,15 +5,19 @@ module Hikvision
   class ResponseError < RuntimeError
     def initialize(xml)
       @xml = xml
-      super(@xml.at_xpath("ResponseStatus/statusString"))
+      super(status_string)
     end
 
     def status_code
-      @xml.at_xpath("ResponseStatus/statusCode")&.to_i
+      @xml.at_xpath("ResponseStatus/statusCode").inner_html.to_i
+    end
+
+    def status_string
+      @xml.at_xpath("ResponseStatus/statusString").inner_html
     end
 
     def sub_status_code
-      @xml.at_xpath("ResponseStatus/subStatusCode")
+      @xml.at_xpath("ResponseStatus/subStatusCode").inner_html
     end
   end
 
@@ -57,10 +61,9 @@ module Hikvision
     def put_xml(path, options = {})
       data = put(path, options)
 
-      return true if data.response.code == 200
+      return true if data.response.code == "200"
 
       xml = Nokogiri::XML(data.body).remove_namespaces!
-      raise "could not set xml of #{path} code:#{data.response.code}" unless xml.at_xpath("ResponseStatus/statusCode")
       raise ResponseError, xml
     end
 
