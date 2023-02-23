@@ -37,9 +37,13 @@ module Hikvision
         end
       end
 
-      def add_opt_getter(method, xml_method, path, transform)
+      def add_opt_getter(method, xml_method, path, transform = nil, &block)
         define_method method do
-          send(:"load_#{xml_method}", cache: true).at_xpath(path)[:opt].split(',').map { |v| v.send(transform) }
+          send(:"load_#{xml_method}", cache: true).at_xpath(path)[:opt].split(',').map do |v|
+            v = v.send(transform) if transform
+            v = block.call(v) if block
+            v
+          end
         end
       end
 
@@ -56,10 +60,7 @@ module Hikvision
 
       def add_setter(method, xml_method, path, *types, &block)
         define_method method do |value|
-          unless types.include?(value.class)
-            raise TypeError,
-                  "#{method}#{value} (#{value.class}) must be of type #{types}"
-          end
+          raise TypeError, "#{method}#{value} (#{value.class}) must be of type #{types}" unless types.any? { |k| value.is_a?(k) }
 
           value = block.call(value) if block
           send(:"load_#{xml_method}", cache: true).at_xpath(path).inner_html = value.to_s
