@@ -1,5 +1,3 @@
-require 'time'
-
 module Hikvision
   class System
     class Time
