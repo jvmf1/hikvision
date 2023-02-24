@@ -18,7 +18,7 @@ module Hikvision
       @channels = {}
       xml = @isapi.get_xml('/ISAPI/Streaming/channels', options)
       xml.xpath('StreamingChannelList/StreamingChannel').each do |c|
-        channel = Channel.new(@isapi, c)
+        channel = Channel.new(@isapi, Nokogiri::XML(c.to_s))
         @channels[channel.id] = channel
       end
       @channels
