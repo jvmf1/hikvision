@@ -3,6 +3,8 @@ require 'time'
 module Hikvision
   class System
     class Time < Hikvision::Base
+      attr_reader :ntp
+
       class << self
         def url
           '/ISAPI/System/time'
@@ -11,6 +13,7 @@ module Hikvision
 
       def initialize(isapi)
         @isapi = isapi
+        @ntp = Ntp.new(isapi)
       end
 
       add_xml(:base, url, 'Time')
