@@ -93,11 +93,11 @@ class App
         end
       end
 
+      print_kv :mode, time.mode.to_s.downcase, opts
+
       time.mode = opts[:"set-mode"] == 'ntp' ? :NTP : :manual if opts[:"set-mode"]
 
       time.update if edited
-
-      print_kv :mode, time.mode.to_s.downcase, opts
 
       if ntp_edited and time.mode == :manual
         puts 'ntp settings altered but the device time mode is set to manual. please run with "--set-mode ntp" to set the time mode to ntp'
