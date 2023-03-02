@@ -38,21 +38,21 @@ class App
   version Hikvision::VERSION
 
   pre do |gopts, _opts, _args|
-    @cam = Hikvision::ISAPI.new(gopts[:h], gopts[:u], gopts[:p])
-    exit_now! 'could not authenticate' if @cam.put('/ISAPI/Security/sessionHeartbeat').response.code == '401'
+    @dev = Hikvision::ISAPI.new(gopts[:h], gopts[:u], gopts[:p])
+    exit_now! 'could not authenticate' if @dev.put('/ISAPI/Security/sessionHeartbeat').response.code == '401'
     1
   end
 
   command :uptime do |c|
     c.action do
-      puts @cam.system.uptime.duration
+      puts @dev.system.uptime.duration
     end
   end
 
   command :date do |c|
     c.flag :strftime, default_value: '%c'
-    c.action do |gopts, opts, args|
-      puts @cam.system.time.now.strftime opts[:strftime].to_s
+    c.action do |_gopts, opts, _args|
+      puts @dev.system.time.now.strftime opts[:strftime].to_s
     end
   end
 
@@ -60,21 +60,25 @@ class App
   command :time do |c|
     c.flag :ntp, arg_name: 'host'
     c.flag :"ntp-port", type: Integer, arg_name: 'port'
-    c.flag :mode, must_match: ['manual', 'ntp'], arg_name: 'ntp,manual'
+    c.flag :mode, must_match: %w[manual ntp], arg_name: 'ntp,manual'
 
-    c.action do |gopts, opts, args|
+    c.action do |_gopts, opts, _args|
       ntp_edited = false
-      [:ntp, :"ntp-port"].each do |key|
+      %i[ntp ntp-port].each do |key|
         if opts[key]
           ntp_edited = true
           break
         end
       end
 
-      @cam.system.time.ntp.host = opts[:ntp] if opts[:ntp]
-      @cam.system.time.ntp.port = opts[:"ntp-port"] if opts[:"ntp-port"]
+      @dev.system.time.ntp.host = opts[:ntp] if opts[:ntp]
+      @dev.system.time.ntp.port = opts[:"ntp-port"] if opts[:"ntp-port"]
 
-      @cam.system.time.ntp.update if ntp_edited
+      @dev.system.time.ntp.update if ntp_edited
+
+      if ntp_edited and @dev.system.time.mode == :manual
+        puts 'NTP settings altered but the device time mode is set to manual. Please run with "--mode ntp" to set the time mode to ntp'
+      end
 
       edited = false
       [:mode].each do |key|
@@ -84,61 +88,61 @@ class App
         end
       end
 
-      @cam.system.time.mode = opts[:mode] == 'ntp' ? :NTP : :manual
+      @dev.system.time.mode = opts[:mode] == 'ntp' ? :NTP : :manual
 
-      @cam.system.time.update if edited
+      @dev.system.time.update if edited
     end
   end
 
   command :model do |c|
     c.action do
-      puts @cam.system.model
+      puts @dev.system.model
     end
   end
 
   command :serial do |c|
     c.action do
-      puts @cam.system.serial
+      puts @dev.system.serial
     end
   end
 
   desc 'Shows the device id'
   command :id do |c|
     c.action do
-      puts @cam.system.id
+      puts @dev.system.id
     end
   end
 
   desc 'Shows the device description'
   command :desc do |c|
     c.action do
-      puts @cam.system.description
+      puts @dev.system.description
     end
   end
 
   command :mac do |c|
     c.action do
-      puts @cam.system.mac_address
+      puts @dev.system.mac_address
     end
   end
 
   command :reboot do |c|
     c.action do
-      @cam.system.reboot
+      @dev.system.reboot
     end
   end
 
   desc 'List available channels'
   command :channels do |c|
     c.action do
-      puts @cam.streaming.channels.collect { |ch| ch.id }
+      puts @dev.streaming.channels.collect { |ch| ch.id }
     end
   end
 
   desc 'Dumps device diagnosed data'
   command :dumpdata do |c|
     c.action do
-      puts @cam.system.diagnosed_data
+      puts @dev.system.diagnosed_data
     end
   end
 
@@ -169,7 +173,7 @@ class App
       id = args[0]
       exit_now! 'channel id must be an integer', 1 if id.to_i.to_s != id
       id = id.to_i
-      ch = @cam.streaming.channel(id)
+      ch = @dev.streaming.channel(id)
       exit_now! "channel id doesn't exists", 1 if ch.nil?
 
       set_opts = %i[set-name set-video-codec set-audio-codec disable-audio enable-audio]
