@@ -58,39 +58,50 @@ class App
 
   desc 'Configurate time settings'
   command :time do |c|
-    c.flag :ntp, arg_name: 'host'
-    c.flag :"ntp-port", type: Integer, arg_name: 'port'
-    c.flag :mode, must_match: %w[manual ntp], arg_name: 'ntp,manual'
+    c.flag :"set-ntp", arg_name: 'host'
+    c.flag :"set-ntp-port", type: Integer, arg_name: 'port'
+    c.flag :"set-mode", must_match: %w[manual ntp], arg_name: 'ntp,manual'
+    c.switch :ntp, negatable: false
+    c.switch :"ntp-port", negatable: false
+    c.switch :mode, negatable: false
 
     c.action do |_gopts, opts, _args|
       ntp_edited = false
-      %i[ntp ntp-port].each do |key|
+      %i[set-ntp set-ntp-port].each do |key|
         if opts[key]
           ntp_edited = true
           break
         end
       end
 
-      @dev.system.time.ntp.host = opts[:ntp] if opts[:ntp]
-      @dev.system.time.ntp.port = opts[:"ntp-port"] if opts[:"ntp-port"]
+      time =@dev.system.time
+      ntp = time.ntp
 
-      @dev.system.time.ntp.update if ntp_edited
+      print_kv :ntp, ntp.host, opts
+      print_kv :"ntp-port", ntp.port, opts
 
-      if ntp_edited and @dev.system.time.mode == :manual
-        puts 'NTP settings altered but the device time mode is set to manual. Please run with "--mode ntp" to set the time mode to ntp'
-      end
+      ntp.host = opts[:"set-ntp"] if opts[:"set-ntp"]
+      ntp.port = opts[:"set-ntp-port"] if opts[:"set-ntp-port"]
+
+      ntp.update if ntp_edited
 
       edited = false
-      [:mode].each do |key|
+      [:"set-mode"].each do |key|
         if opts[key]
           edited = true
           break
         end
       end
 
-      @dev.system.time.mode = opts[:mode] == 'ntp' ? :NTP : :manual
+      time.mode = opts[:"set-mode"] == 'ntp' ? :NTP : :manual if opts[:"set-mode"]
 
-      @dev.system.time.update if edited
+      time.update if edited
+
+      print_kv :mode, time.mode.to_s.downcase, opts
+
+      if ntp_edited and time.mode == :manual
+        puts 'ntp settings altered but the device time mode is set to manual. please run with "--set-mode ntp" to set the time mode to ntp'
+      end
     end
   end
 
