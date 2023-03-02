@@ -56,6 +56,40 @@ class App
     end
   end
 
+  desc 'Configurate time settings'
+  command :time do |c|
+    c.flag :ntp, arg_name: 'host'
+    c.flag :"ntp-port", type: Integer, arg_name: 'port'
+    c.flag :mode, must_match: ['manual', 'ntp'], arg_name: 'ntp,manual'
+
+    c.action do |gopts, opts, args|
+      ntp_edited = false
+      [:ntp, :"ntp-port"].each do |key|
+        if opts[key]
+          ntp_edited = true
+          break
+        end
+      end
+
+      @cam.system.time.ntp.host = opts[:ntp] if opts[:ntp]
+      @cam.system.time.ntp.port = opts[:"ntp-port"] if opts[:"ntp-port"]
+
+      @cam.system.time.ntp.update if ntp_edited
+
+      edited = false
+      [:mode].each do |key|
+        if opts[key]
+          edited = true
+          break
+        end
+      end
+
+      @cam.system.time.mode = opts[:mode] == 'ntp' ? :NTP : :manual
+
+      @cam.system.time.update if edited
+    end
+  end
+
   command :model do |c|
     c.action do
       puts @cam.system.model
