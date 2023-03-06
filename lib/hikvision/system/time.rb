@@ -26,12 +26,6 @@ module Hikvision
 
       add_getter(:zone, :base, '//timeZone')
       add_setter(:zone=, :base, '//timeZone', String)
-
-      def update(options = {})
-        options[:body] = @base_xml.to_s
-
-        @isapi.put_xml(self.class.url, options)
-      end
     end
   end
 end

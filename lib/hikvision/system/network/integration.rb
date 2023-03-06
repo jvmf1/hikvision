@@ -21,12 +21,6 @@ module Hikvision
       add_bool_getter(:cgi?, :base, '//CGI/enable')
       add_bool_getter(:onvif?, :base, '//ONVIF/enable')
       add_bool_getter(:isapi?, :base, '//ISAPI/enable')
-
-      def update(options = {})
-        options[:body] = @base_xml.to_s
-  
-        @isapi.put_xml(self.class.url, options)
-      end
     end
   end
 end

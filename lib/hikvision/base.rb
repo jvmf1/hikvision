@@ -59,6 +59,17 @@ module Hikvision
       end
 
       def add_setter(method, xml_method, path, *types, &block)
+        update_method = xml_method == :base ? :update : :"update_#{xml_method}"
+
+        if not respond_to? update_method
+          define_method update_method do |options = {}|
+            send(:"before_#{update_method}") if respond_to? :"before_#{update_method}"
+
+            options[:body] = instance_variable_get(:"@#{xml_method}_xml").to_s
+            @isapi.put_xml(respond_to?(:url) ? send(:url) : self.class.url, options)
+          end
+        end
+
         define_method method do |value|
           raise TypeError, "#{method}#{value} (#{value.class}) must be of type #{types}" unless types.any? { |k| value.is_a?(k) }
 

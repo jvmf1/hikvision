@@ -97,16 +97,14 @@ module Hikvision
         @isapi.get("#{url}/picture", options).response.body
       end
 
-      def update(options = {})
-        options[:body] = @base_xml.to_s
-
-        @isapi.cache.delete('/ISAPI/Streaming/channels')
-
-        @isapi.put_xml(url, options)
-      end
-
       def url
         "/ISAPI/Streaming/channels/#{id}"
+      end
+
+      private
+
+      def before_update
+        @isapi.cache.delete('/ISAPI/Streaming/channels')
       end
     end
   end
