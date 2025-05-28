@@ -80,7 +80,7 @@ module Hikvision
                   "#{method}#{value} (#{value.class}) must be of type #{types}"
           end
 
-          value = block.call(value) if block && value # rubocop:disable Performance/RedundantBlockCall
+          value = block.call(value) if block && !value.nil? # rubocop:disable Performance/RedundantBlockCall
 
           xml = send(:"load_#{xml_method}", cache: true)
           node = xml.at_xpath(path)
