@@ -2,6 +2,7 @@
 # frozen_string_literal: true
 
 require "hikvision"
+require "logger"
 require "mqtt/homie/home_assistant"
 require "optparse"
 
@@ -13,7 +14,7 @@ class MQTTBridge
       uri = begin
         URI.parse(camera_uri)
       rescue URI::InvalidURIError => e
-        warn "Invalid URI #{camera_uri}: #{e}"
+        homie.logger.warn "Invalid URI #{camera_uri}: #{e}"
         next
       end
       camera = Hikvision::ISAPI.new(uri.host,
@@ -29,25 +30,33 @@ class MQTTBridge
         }
       rescue Errno::EHOSTUNREACH, OpenSSL::SSL::SSLError, Socket::ResolutionError => e
         uri.password = nil
-        warn "Could not connect to #{uri}: #{e}"
+        homie.logger.warn "Could not connect to #{uri}: #{e}"
         next
       end
       node_id = camera.system.id
 
+      # optimistic for Homie, so that it applies the new value automatically (but only on success),
+      # but not optimistic for Home Assistant, so that it at least waits for the request to be
+      # attempted
       @homie.node(MQTT::Homie.escape_id(camera.system.serial), camera.system.name, camera.system.model) do |node|
-        image = camera.image.channel(1)
-        node.property("ir-light",
-                      "IR Light",
-                      :boolean,
-                      camera.system.hardware.ir_light?,
-                      hass: { switch: { node_id:,
-                                        object_id: "ir-light",
-                                        icon: "mdi:white-balance-iridescent",
-                                        entity_category: :config } },
-                      optimistic: true) do |value|
-          camera.system.hardware.ir_light = value
-          camera.system.hardware.update
+        if camera.system.hardware
+          node.property("ir-light",
+                        "IR Light",
+                        :boolean,
+                        camera.system.hardware.ir_light?,
+                        hass: { switch: { node_id:,
+                                          object_id: "ir-light",
+                                          icon: "mdi:alarm-light-off-outline",
+                                          entity_category: :config,
+                                          optimistic: false } },
+                        optimistic: true) do |value|
+            camera.system.hardware.ir_light = value
+            camera.system.hardware.update
+          end
         end
+
+        image = camera.image.channel(1)
+
         node.property("shutter-speed",
                       "Shutter Speed",
                       :enum,
@@ -55,16 +64,80 @@ class MQTTBridge
                       format: image.shutter.speed_opts,
                       hass: { select: { node_id:,
                                         object_id: "shutter-speed",
-                                        icon: "mage:lens",
-                                        entity_category: :config } },
+                                        icon: "mdi:camera-iris",
+                                        entity_category: :config,
+                                        optimistic: false } },
                       optimistic: true) do |value|
                         image.shutter.speed = value
                         image.shutter.update
                       end
+
+        if image.supplement_light?
+          sl = image.supplement_light
+          node.property("supplement-light-mode",
+                        "Supplement Light Mode",
+                        :enum,
+                        sl.mode,
+                        format: sl.mode_opts,
+                        hass: { select: { node_id:,
+                                          object_id: "supplement-light-mode",
+                                          icon: "mdi:alarm-light-off-outline",
+                                          entity_category: :config,
+                                          optimistic: false } },
+                        optimistic: true) do |value|
+                          sl.mode = value
+                          sl.update
+                        end
+
+          node.property("ir-light-brightness",
+                        "IR Light Brightness",
+                        :integer,
+                        sl.ir_light_brightness,
+                        format: sl.ir_light_brightness_opts,
+                        hass: { number: { node_id:,
+                                          object_id: "ir-light-brightness",
+                                          icon: "mdi:alarm-light-outline",
+                                          entity_category: :config,
+                                          optimistic: false } },
+                        optimistic: true) do |value|
+                          sl.ir_light_brightness = value
+                          sl.update
+                        end
+
+          node.property("white-light-brightness",
+                        "White Light Brightness",
+                        :integer,
+                        sl.white_light_brightness,
+                        format: sl.white_light_brightness_opts,
+                        hass: { number: { node_id:,
+                                          object_id: "white-light-brightness",
+                                          icon: "mdi:alarm-light-outline",
+                                          entity_category: :config,
+                                          optimistic: false } },
+                        optimistic: true) do |value|
+                          sl.white_light_brightness = value
+                          sl.update
+                        end
+
+          node.property("brightness-control",
+                        "Brightness Control",
+                        :enum,
+                        sl.brightness_control,
+                        format: sl.brightness_control_opts,
+                        hass: { select: { node_id:,
+                                          object_id: "brightness-control",
+                                          icon: "mdi:alarm-light-outline",
+                                          entity_category: :config,
+                                          optimistic: false } },
+                        optimistic: true) do |value|
+                          sl.brightness_control = value
+                          sl.update
+                        end
+        end
       end
     end
     if @homie.empty?
-      warn "No cameras found"
+      homie.logger.warn "No cameras found"
       exit 1
     end
     @homie.publish
@@ -114,5 +187,7 @@ homie = MQTT::Homie::Device.new(device_id,
                                 mqtt: mqtt_uri,
                                 metadata:,
                                 home_assistant_discovery:)
+homie.logger = Logger.new($stderr)
+homie.logger.level = :info
 
 MQTTBridge.new(homie, *ARGV)
