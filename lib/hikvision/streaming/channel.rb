@@ -71,18 +71,23 @@ module Hikvision
       add_setter(:snapshot_image_type=, :base, "Video/snapShotImageType", String)
       add_opt_getter(:snapshot_image_type_opts, :capabilities, "Video/snapShotImageType", :to_s)
 
-      add_getter(:audio_codec, :base, "Video/audioCompressionType")
-      add_setter(:audio_codec=, :base, "Video/audioCompressionType", String)
-      add_opt_getter(:audio_codec_opts, :capabilities, "Video/audioCompressionType", :to_s)
-
       add_getter(:video_smoothing, :base, "Video/smoothing", &:to_i)
       add_opt_range_getter(:video_smoothing_opts, :capabilities, "Video/smoothing")
+
+      add_getter(:audio?, :capabilities, "Audio") { |v| !v.nil? }
 
       add_bool_getter(:audio_enabled?, :base, "Audio/enabled")
       add_setter(:audio_enabled=, :base, "Audio/enabled", TrueClass, FalseClass)
 
+      add_getter(:audio_codec, :base, "Audio/audioCompressionType")
+      add_setter(:audio_codec=, :base, "Audio/audioCompressionType", String)
+      add_opt_getter(:audio_codec_opts, :capabilities, "Audio/audioCompressionType", :to_s)
+
       add_bool_getter(:svc_enabled?, :base, "Video/SVC/enabled")
       add_setter(:svc_enabled=, :base, "Video/SVC/enabled", TrueClass, FalseClass)
+
+      add_bool_getter(:smart_codec?, :base, "Video/SmartCodec/enabled")
+      add_setter(:smart_codec=, :base, "Video/SmartCodec/enabled", TrueClass, FalseClass)
 
       add_bool_getter(:enabled?, :base, "enabled")
       add_bool_getter(:video_enabled?, :base, "Video/enabled")
